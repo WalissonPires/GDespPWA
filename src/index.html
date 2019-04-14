@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="theme-color" content="#00bcd4"/>
+    <link rel="manifest" href="/manifest.json">
+
+    <title>GDesp</title>
+
+    <style>
+        /* Center the loader */
+        #loader {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 1;
+            width: 150px;
+            height: 150px;
+            margin: -75px 0 0 -75px;
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+        
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Add animation to "page content" */
+        .animate-bottom {
+            position: relative;
+            -webkit-animation-name: animatebottom;
+            -webkit-animation-duration: 1s;
+            animation-name: animatebottom;
+            animation-duration: 1s
+        }
+        
+        @-webkit-keyframes animatebottom {
+            from { bottom:-100px; opacity:0 } 
+            to { bottom:0px; opacity:1 }
+        }
+        
+        @keyframes animatebottom { 
+            from{ bottom:-100px; opacity:0 } 
+            to{ bottom:0; opacity:1 }
+        }
+        
+    </style>
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/solid.css" integrity="sha384-QokYePQSOwpBDuhlHOsX0ymF6R/vLk/UQVz3WHa6wygxI5oGTmDTv8wahFOSspdm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/fontawesome.css" integrity="sha384-vd1e11sR28tEK9YANUtpIOdjGW14pS87bUBuOIoBILVWLFnS+MCX9T6MMf0VdPGq" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="main">
+        <header class="header">
+            <div class="icon">
+                <i class="menu-icon fas fa-bars"></i>
+            </div>
+            <div class="title">                
+                <span class="title">GDesp PWA</span>
+            </div>
+            <div class="actions">
+                <span class="action"><i class="fas fa-ellipsis-v"></i></span>
+            </div>
+        </header>
+        <div class="body">
+            <nav class="menu"></nav>
+            <div class="content p-1" id="AppContent">                
+                <div id="loader"></div>
+                <!--
+                <div class="card p-0">
+                    <ul class="list-card">
+                        <li class="list-header">
+                            <span class="title">Nubank</span>
+                            <span class="total">R$ 1240,54</span>
+                        </li>
+                        <li class="list-item">
+                            <div class="card-expense">
+                                <div class="content">
+                                    <div class="icon">
+                                    <span class="icon-circle">C</span>
+                                    </div>
+                                    <div class="detail">
+                                        <p class="description">Coelho Diz 1/2</p>
+                                        <p class="info hint-color">12 abil, 2019</p>
+                                    </div>
+                                    <div class="price">
+                                        <span>R$ 3.124</span>
+                                    </div>                        
+                                </div>
+                                <div class="footer">
+                                    <div class="info hint-color"><span>Membros: </span></div>
+                                    <div class="members">                                    
+                                        <span class="icon-circle">W</span>
+                                        <span class="icon-circle">G</span>
+                                        <span class="icon-circle">K</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>                
+            -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker
+                    .register('./service-worker.js')
+                    .then(function() { console.log('Service Worker Registered'); });
+        }
+    </script>
+
+    <script src="libs/jquery/js/jquery-3.4.0.min.js"></script>
+
+    <script src="js/core/namespace-utils.js"></script>
+    <script src="js/core/fetch-utils.js"></script>
+
+    <script src="js/core/entities/expense-entity.js"></script>
+
+    <script src="js/services/gdesp-api-core.js"></script>
+    <script src="js/services/expenses-api.js"></script>
+    
+    <script src="js/components/card-expense-component.js"></script>
+    <script src="js/components/list-expense-component.js"></script>
+
+    <script src="js/index.js"></script>
+</body>
+</html>
