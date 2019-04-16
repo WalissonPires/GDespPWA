@@ -1,11 +1,15 @@
 window.onload = function(e) {
 
     downloadExpenses();
+
+    $('[name="monthExpenses"]').change(downloadExpenses);
 };
 
 function downloadExpenses() {
 
-    new App.Services.ExpensesApi().getByMonth(04, 2019).forEach(x => {
+    var month = parseInt($('[name="monthExpenses"]').val());
+
+    new App.Services.ExpensesApi().getByMonth(month, 2019).forEach(x => {
         console.log('[DownloadExpenses] Subs in promise');
         x.then(gExpenses => {
             console.log('[DownloadExpenses] Data receveid');
@@ -21,17 +25,22 @@ function parseGDespExpense(gExp) {
 
     /* 
     categoria: "Alimentação"
-categoriaID: 1
-dataCompra: "2019-04-06T16:11:43.049786-03:00"
-descricao: "IOF"
-despesaID: 703
-origem: "LuizaCred"
-parcelaAtual: 1
-parcelaID: 852
-status: "Geilza"
-totalParcelas: 1
-valor: 6.6
-vencimento: "2019-04-15T00:00:00-03:00"
+    categoriaID: 1
+    dataCompra: "2019-04-06T16:11:43.049786-03:00"
+    descricao: "IOF"
+    despesaID: 703
+    origem: "LuizaCred"
+    parcelaAtual: 1
+    parcelaID: 852
+    status: "Geilza"
+    totalParcelas: 1
+    valor: 6.6
+    vencimento: "2019-04-15T00:00:00-03:00",
+    devedores: [{
+        id: 2,
+        nome: 'aa',
+        valor: 99.99
+    }]
     */
 
     var exp = {
@@ -51,11 +60,15 @@ vencimento: "2019-04-15T00:00:00-03:00"
             id: gExp.origem,
             name: gExp.origem
         },
-        members: []
+        members: gExp.devedores.map(x => ({ 
+            id: x.id,
+            name: x.nome,
+            price: x.valor
+         }))
         // members: [{
         //     id: 'GUID',
         //     name: 'Walisson',
-        //     pricePrice: 33.33
+        //     price: 33.33
         // }]
     };
 

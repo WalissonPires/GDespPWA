@@ -325,3 +325,14 @@ h4, .text-4 {
 .card-expense > .footer > .members {
     font-size: .8em;
 }
+
+.card-expense > .footer > .members > .icon-circle {
+    margin-left: 5px;
+}
+
+select {
+    border: none;
+    padding: 5px;
+    color: #fff;
+    background-color: #00bcd4;
+}

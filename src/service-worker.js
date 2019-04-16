@@ -1,25 +1,25 @@
 'use strict';
 
 var dataCacheName  = 'GDespDataCache';
-var cacheName = 'GDespShellCache-v1.0';
+var cacheName = 'GDespShellCache-v1.0.3';
 var filesToCache = [
-    '/',
-    '/index.html',
-    '/css/index.css',
-    '/images/icon-120x120.png',
-    '/images/icon-144x144.png',
-    '/images/icon-152x152.png',
-    '/images/icon-180x180.png',
-    '/images/icon-310x310.png',
-    '/js/components/card-expense-component.js',
-    '/js/components/list-expense-component.js',
-    '/js/core/entities/expense-entity.js',
-    '/js/core/fetch-utils.js',
-    '/js/core/namespace-utils.js',
-    '/js/services/expenses-api.js',
-    '/js/services/gdesp-api-core.js',
-    '/js/index.js',
-    '/libs/jquery/js/jquery-3.4.0.min.js'
+    './',
+    './index.html',
+    './css/index.css',
+    './images/icon-120x120.png',
+    './images/icon-144x144.png',
+    './images/icon-152x152.png',
+    './images/icon-180x180.png',
+    './images/icon-310x310.png',
+    './js/components/card-expense-component.js',
+    './js/components/list-expense-component.js',
+    './js/core/entities/expense-entity.js',
+    './js/core/fetch-utils.js',
+    './js/core/namespace-utils.js',
+    './js/services/expenses-api.js',
+    './js/services/gdesp-api-core.js',
+    './js/index.js',
+    './libs/jquery/js/jquery-3.4.0.min.js'
   ];
 
 self.addEventListener('install', function(e) {
