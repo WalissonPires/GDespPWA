@@ -2,7 +2,7 @@
     "name": "GDesp - Despesas em grupo",
     "short_name": "GDesp",
     "icons": [{
-      "src": "./images/icon-120x120.png",
+        "src": "./images/icon-128x128.png",
         "sizes": "128x128",
         "type": "image/png"
       }, {
@@ -13,12 +13,13 @@
         "src": "./images/icon-152x152.png",
         "sizes": "152x152",
         "type": "image/png"
-      }, {
-        "src": "./images/icon-180x180.png",
+      },{
+        "src": "/android-chrome-192x192.png",
         "sizes": "192x192",
         "type": "image/png"
-      }, {
-        "src": "./images/icon-310x310.png",
+      },
+      {
+        "src": "/android-chrome-256x256.png",
         "sizes": "256x256",
         "type": "image/png"
       }],

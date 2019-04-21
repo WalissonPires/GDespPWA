@@ -1,16 +1,21 @@
 'use strict';
 
 var dataCacheName  = 'GDespDataCache';
-var cacheName = 'GDespShellCache-v1.0.3';
+var cacheName = 'GDespShellCache-v1.0.4';
 var filesToCache = [
     './',
     './index.html',
     './css/index.css',
-    './images/icon-120x120.png',
-    './images/icon-144x144.png',
-    './images/icon-152x152.png',
-    './images/icon-180x180.png',
-    './images/icon-310x310.png',
+    './android-chrome-192x192.png',
+    './android-chrome-256x256.png',
+    './apple-touch-icon.png',
+    './favicon-16x16.png',
+    './favicon-32x32.png',
+    './icon-128x128.png',
+    './icon-144x144.png',
+    './icon-152x152.png',
+    './mstile-150x150.png',
+    './safari-pinned-tab.svg',
     './js/components/card-expense-component.js',
     './js/components/list-expense-component.js',
     './js/core/entities/expense-entity.js',
