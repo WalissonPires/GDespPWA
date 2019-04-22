@@ -1,7 +1,7 @@
 'use strict';
 
 var dataCacheName  = 'GDespDataCache';
-var cacheName = 'GDespShellCache-v1.0.6';
+var cacheName = 'GDespShellCache-v1.0.7';
 var filesToCache = [
     './',
     './index.html',
@@ -11,9 +11,9 @@ var filesToCache = [
     './apple-touch-icon.png',
     './favicon-16x16.png',
     './favicon-32x32.png',
-    './icon--128x128.png',
-    './icon--144x144.png',
-    './icon--152x152.png',
+    './icon-128x128.png',
+    './icon-144x144.png',
+    './icon-152x152.png',
     './mstile-150x150.png',
     './safari-pinned-tab.svg',
     './js/components/card-expense-component.js',
