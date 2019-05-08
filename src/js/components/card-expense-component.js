@@ -3,7 +3,7 @@
     /***     
      * @param {any} options
      * {     
-     *     expense: Expense
+     *     expense: Expense,    
      * } 
      */
     var CardExpenseComponent = function(options) {

@@ -45,6 +45,16 @@ h4, .text-4 {
     margin-right: 5px;
 }
 
+.px-0 {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.py-0 {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
 .warning__color {
     color: #FFEB3B;
 }
@@ -68,6 +78,41 @@ h4, .text-4 {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.font-aws {
+    font-family: 'Font Awesome 5 Free', 'sans-serif';
+    font-weight: 900;
+}
+
+.price-color {
+    color: #FF9800;
+    font-weight: bold;
+}
+
+.checkbox > .check::after {
+    content: '\f0c8';
+    font-family: 'Font Awesome 5 Free', 'sans-serif';
+    font-weight: 200;
+    font-size: 1.5em;
+    display: inline-block;
+    margin-top: -.2em;
+    margin-left: -.9em;
+    font-style: normal;
+}
+
+.checkbox > input[type="checkbox"]:checked ~ .check::after {
+     content: '\f14a';
+     font-weight: bold;
+     color: #00bcd4;
+}
+
+.checkbox > input[type="checkbox"] {
+    opacity: 0;
+}
+
+.checkbox {
+    position: relative;
 }
 
 /* ==== MAIN LAYOUT 
@@ -137,6 +182,107 @@ h4, .text-4 {
     flex: 1;
 }
 
+/* ==== MODAL
+   ================================ */
+   .x-modal-overlay {
+    background-color: rgba(0,0,0,0);
+    position: fixed;
+    z-index: 9;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.x-modal {
+    height: auto;
+    width: auto;
+    min-width: 300px;
+    background-color: #fff;
+    box-shadow: 0px 0px 5px rgba(0,0,0,.1);
+}
+
+.x-modal > .x-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding: 10px;
+    font-size: 1.5em;
+    background-color: #00bcd4;
+    color: #fff;
+}
+
+.x-modal > .x-footer {
+    display: flex;
+    flex-direction: row;
+}
+
+.x-modal > .x-footer > * {
+    flex: 1;
+}
+
+.x-modal .x-btn {
+    border: none;
+    background-color: #ddd;
+    color: #444;
+    outline: none;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color .2s ease-in-out;
+}
+
+.x-modal .x-btn[disabled] {
+    background-color: #aaa;
+    cursor: default;
+}
+
+.x-modal .x-btn:not([disabled]):hover {
+    background-color: #ccc;
+}
+
+.x-modal .x-btn.x-btn-success:not([disabled]) {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.x-modal .x-btn.x-btn-success:not([disabled]):hover {
+    background-color: #409a44;
+}
+
+.x-modal .x-title {
+    margin: 0 20px;
+    text-align: left;
+    flex: 1;
+}
+
+.x-modal .x-close,
+.x-modal .x-actions {
+   font-size: .7em;
+   font-weight: normal;
+}
+
+@media screen and (max-width: 825px) {
+
+    .x-modal {
+        height: 100vh;
+        width: 100%;
+        background-color: #f5f5f5;
+    }
+
+    .x-modal > .x-body {
+        padding: 10px;
+    }
+
+    .x-modal .card {
+        margin-bottom: 10px;
+    }
+}
+
 /* ==== CARD 
    =============================== */
 .card {
@@ -148,6 +294,13 @@ h4, .text-4 {
     background-color: #fff;
     color: rgb(76, 76, 87);
     box-shadow: 0px 1px 2px rgba(0,0,0,.1);
+}
+
+.card > .title-s {
+    font-size: 1em;
+    font-weight: bold;
+    color: #666;
+    margin-bottom: 10px;
 }
 
 .card-list {
@@ -212,13 +365,6 @@ h4, .text-4 {
 .card-expense > .info .tag:not(:last-child) {
     margin-right: 5px;
 }
-
-.card-expense > .value {
-    /* border-left: 1px solid #eee;
-    padding-left: 10px; */
-}
-
-
 
 
 
@@ -330,9 +476,65 @@ h4, .text-4 {
     margin-left: 5px;
 }
 
-select {
+.main > .header select {
     border: none;
     padding: 5px;
     color: #fff;
     background-color: #00bcd4;
+}
+
+
+/* FORM ELEMENTS */
+.input-wrapper {
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.input-wrapper > .append-l {
+    margin-right: 5px;
+}
+
+.input-wrapper > .append-r {
+    margin-left: 5px;
+}
+
+.input-wrapper > input {
+    width: 100%;
+}
+
+select, input {
+    padding: 5px 10px;
+    border: none;
+    border-bottom: 1px solid #aaa;
+    transition: border-color .2s ease-in;
+}
+
+select:hover, input:hover,
+select:focus, input:focus {
+    outline: none;
+    border-color: #00bcd4;    
+}
+
+
+/* Modal Expense */
+
+.modal-expense .card-members .member {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.modal-expense .card-members .member > .icon {
+    font-size: .8em;
+}
+
+.modal-expense .card-members .member > .name {
+    text-align: left;
+    flex: 1;
+    padding: 0 10px;
 }

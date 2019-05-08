@@ -38,22 +38,24 @@ function parseGDespExpense(gExp) {
     vencimento: "2019-04-15T00:00:00-03:00",
     devedores: [{
         id: 2,
+        usuarioId,
         nome: 'aa',
         valor: 99.99
     }]
     */
 
     var exp = {
-        id: gExp.despesaId + '-' + gExp.parcelaId,
+        id: gExp.despesaID + '-' + gExp.parcelaID,
         description: gExp.descricao,
         currentInstallment: gExp.parcelaAtual,
         totalInstallment: gExp.totalParcelas,
         createDate: gExp.dataCompra,
         purchaseDate: gExp.dataCompra,
+        dueDate: gExp.vencimento,
         paidDate: null,
         price: gExp.valor,
         category: {
-            id: gExp.categoriaId,
+            id: gExp.categoriaID,
             name: gExp.categoria
         },
         origin: {
@@ -62,14 +64,11 @@ function parseGDespExpense(gExp) {
         },
         members: gExp.devedores.map(x => ({ 
             id: x.id,
+            guestId: x.convidadoId,
+            userId: x.usuarioId,
             name: x.nome,
             price: x.valor
-         }))
-        // members: [{
-        //     id: 'GUID',
-        //     name: 'Walisson',
-        //     price: 33.33
-        // }]
+         }))        
     };
 
     return exp;
@@ -79,7 +78,21 @@ function createListExpensesComponent(expenses) {
     
     const $content = $('#AppContent');    
     
-    const listDom = new App.Components.ListExpensesCompoent({ expenses: expenses });
+    const listOptions = {
+        expenses: expenses,
+        onItemAdded: (domItem, expense) => {
+
+            $(domItem).click((function(exp) {
+
+                return (e) => {
+                   
+                    new App.Components.ExpenseDetailComponent({ expense: exp });
+                };
+
+            })(expense));
+        }
+    };
+    const listDom = new App.Components.ListExpensesCompoent(listOptions);
     
     $content.empty().append(listDom);
 }

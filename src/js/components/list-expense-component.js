@@ -3,12 +3,16 @@
     /***     
      * @param {any} options 
      * {
-     *      expenses: Expense[]
+     *      expenses: Expense[],
+     *      onItemAdded: function(domItem, expense) // this is ListExpensesCompoent
      * }
      */
     var ListExpensesCompoent = function(options) {
 
+        const self = this;
         var groupExpenses = {};
+        options = options || {};
+        options.onItemAdded = options.onItemAdded || function() {};
 
         for (let i = 0; i < options.expenses.length; i++) {
 
@@ -49,6 +53,8 @@
                 const $item = $('<li class="list-item"></li>');
                 $item.append(new App.Components.CardExpenseComponent({ expense: expense }));
                 $dom.append($item);
+
+                options.onItemAdded.call(self, $item[0], expense);
             }
         }
 
