@@ -1,11 +1,12 @@
 'use strict';
 
 var dataCacheName  = 'GDespDataCache';
-var cacheName = 'GDespShellCache-v1.0.7';
+var cacheName = 'GDespShellCache-v1.0.9';
 var filesToCache = [
     './',
     './index.html',
     './css/index.css',
+    './libs/bootstrap/css/bootstrap-grid.min.css',
     './android-chrome-192x192.png',
     './android-chrome-256x256.png',
     './apple-touch-icon.png',
@@ -18,10 +19,13 @@ var filesToCache = [
     './safari-pinned-tab.svg',
     './js/components/card-expense-component.js',
     './js/components/list-expense-component.js',
+    './js/components/expense-detail-component.js',
+    './js/components/modal-component.js',
     './js/core/entities/expense-entity.js',
     './js/core/fetch-utils.js',
     './js/core/namespace-utils.js',
     './js/services/expenses-api.js',
+    './js/services/members-api.js',
     './js/services/gdesp-api-core.js',
     './js/index.js',
     './libs/jquery/js/jquery-3.4.0.min.js'
