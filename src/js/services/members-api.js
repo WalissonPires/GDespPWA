@@ -14,7 +14,7 @@
                 method: 'GET'
             }));
 
-            promise.then(promises => {
+            return promise.then(promises => {
 
                 var promises = promises.map(x => {
 
@@ -31,8 +31,6 @@
 
                 return promises;
             });
-
-            return promise;
         };
     };
 
