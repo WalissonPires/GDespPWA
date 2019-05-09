@@ -9,16 +9,22 @@ function downloadExpenses() {
 
     var month = parseInt($('[name="monthExpenses"]').val());
 
-    new App.Services.ExpensesApi().getByMonth(month, 2019).forEach(x => {
-        console.log('[DownloadExpenses] Subs in promise');
-        x.then(gExpenses => {
-            console.log('[DownloadExpenses] Data receveid');
-            
-            const expenses = gExpenses.map(x => parseGDespExpense(x));
+    new App.Services.ExpensesApi().getByMonth(month, 2019)
+    .then(promises => { 
+        
+        promises.forEach(x => {
 
-            createListExpensesComponent(expenses);
+            console.log('[DownloadExpenses] Subs in promise');
+            x.then(gExpenses => {
+                console.log('[DownloadExpenses] Data receveid');
+                
+                const expenses = gExpenses.map(x => parseGDespExpense(x));
+
+                createListExpensesComponent(expenses);
+            })
         })
-    });
+    })
+    .catch(() => alert('Falha ao baixar despesas'));
 }
 
 function parseGDespExpense(gExp) {

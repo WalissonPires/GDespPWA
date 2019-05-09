@@ -19,20 +19,26 @@
 
     FetchUtils.fetchJsonWithCache = function (request) {
 
-        var promises = [];
+        var _promise = new Promise((resolve, reject) => {
 
-        promises.push(FetchUtils.fetchJson(request));
-        
-        if ('caches' in window) {
+            var promises = [];
             
-            caches.match(request.url).then(function(response) {
-                if (response) {
-                    promises.push(response.json());
-                }
-            });
-        }
+            promises.push(FetchUtils.fetchJson(request));
+            
+            if ('caches' in window) {
+                
+                caches.match(request.url).then(function(response) {
+                    if (response) {
+                        promises.push(response.json());                        
+                    }
+                    resolve(promises);
+                });
+            }          
+            else
+                resolve(promises);
+        });
 
-        return promises;
+        return _promise;
     }
 
     App.Utils.Namespace.CreateIfNotExists('App.Utils').FetchUtils = FetchUtils;

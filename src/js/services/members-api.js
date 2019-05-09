@@ -10,24 +10,28 @@
          
             const url = BaseUrl;
 
-            var promises = FetchUtils.fetchJsonWithCache(new Request(url, {
+            var promise = FetchUtils.fetchJsonWithCache(new Request(url, {
                 method: 'GET'
             }));
 
-            promises = promises.map(x => {
+            promise.then(promises => {
 
-                return x.then(members => {
+                var promises = promises.map(x => {
 
-                    return members.map((x) => ({                                                
-                        id: 0,
-                        name: x.nome,                        
-                        userId: x.usuarioID,
-                        guestId: x.id > 0 ? x.id : null
-                    }));
+                    return x.then(members => {
+    
+                        return members.map((x) => ({                                                
+                            id: 0,
+                            name: x.nome,                        
+                            userId: x.usuarioID,
+                            guestId: x.id > 0 ? x.id : null
+                        }));
+                    });
                 });
+
             });
 
-            return promises;
+            return promise;
         };
     };
 

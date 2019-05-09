@@ -10,7 +10,7 @@
 
         options = options || {};
 
-        new App.Components.ModalComponent({
+        const modal = new App.Components.ModalComponent({
             dataTemplate: '#modal-expense-template',
             onDone: modalDone
         });
@@ -19,16 +19,25 @@
 
             let called = false;
 
-            new App.Services.MembersApi().getAll().forEach(x => {
-
-                x.then(membersList => {
+            new App.Services.MembersApi().getAll()            
+            .then(promises => { 
                 
-                    if (called)
-                        return;
+                promises.forEach(x => {
+
+                    x.then(membersList => {
                     
-                    called = true;                
-                    loadData(modalEl, membersList);
-                });
+                        if (called)
+                            return;
+                        
+                        called = true;                
+                        loadData(modalEl, membersList);
+                    });
+                })
+            })            
+            .cath(() => {
+
+                modal.hide();
+                alert('Falha ao baixar dados');
             });
 
         }
