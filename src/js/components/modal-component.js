@@ -71,6 +71,18 @@
             $template.find('.x-footer').html($userTemplate.children('.footer').html());
         }        
 
+
+        this.hide = function() {
+
+            $('#' + modalId).remove();
+        }
+
+        this.getRootElement = function() {
+
+            return $('#' + modalId).find('.x-modal');
+        }
+
+
         createModal();
     };
 

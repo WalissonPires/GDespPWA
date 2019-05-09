@@ -65,7 +65,7 @@ function parseGDespExpense(gExp) {
             name: gExp.categoria
         },
         origin: {
-            id: gExp.origem,
+            id: gExp.origemID || 0,
             name: gExp.origem
         },
         members: gExp.devedores.map(x => ({ 

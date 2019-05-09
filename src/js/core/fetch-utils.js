@@ -9,7 +9,9 @@
             .then((response) => {
 
                 const contentType = response.headers.get("content-type");
-                if(contentType && contentType.indexOf("application/json") !== -1)
+                if (contentType === null)
+                    return null;
+                else if(contentType && contentType.indexOf("application/json") !== -1)
                   return response.json();
                 else 
                     throw { status: 0, message: 'Servidor respondeu em um formato inválido: ' + contentType };
