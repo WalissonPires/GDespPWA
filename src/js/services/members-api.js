@@ -29,6 +29,7 @@
                     });
                 });
 
+                return promises;
             });
 
             return promise;

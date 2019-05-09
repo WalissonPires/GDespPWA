@@ -34,7 +34,7 @@
                     });
                 })
             })            
-            .cath(() => {
+            .catch(() => {
 
                 modal.hide();
                 alert('Falha ao baixar dados');
