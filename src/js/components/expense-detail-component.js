@@ -32,20 +32,23 @@
                         called = true;                
                         loadData(modalEl, membersList);
                         bindEvents(modalEl);
+
+                        const $m = $(modalEl);
+                        $m.find('.wrapper-loader').remove();
+                        $m.find('.wrapper-body').attr('style', null);
+                        $m.find('[name="save"]').attr('disabled', null);
                     });
                 })
             })            
             .catch(() => {
 
                 modal.hide();
-                alert('Falha ao baixar dados');
+                App.Utils.Toast.error('Falha ao baixar dados');
             });
 
         }
 
-        function loadData(modalEl, membersList) {
-
-            console.log('[CARREGANDO DADOS DA DESPESA NO HTML]');
+        function loadData(modalEl, membersList) {            
 
             const $m = $(modalEl);
             const exp = options.expense;
@@ -92,9 +95,6 @@
 
                 $membersContent.append($memberEl);
             });
-
-            console.log('loadData', options.expense);
-            console.log('modal', modalEl);
         }
 
         function bindEvents(modalEl) {
@@ -161,33 +161,29 @@
             const $btnSave = $m.find('[name="save"]');
 
             $btnSave.attr('disabled', 'disabled');
-
+            App.Utils.Toast.info('Salvando dados...');
             try {
-                expApi.updatePartial(expense)
+
+                const promises = [
+                    expApi.updatePartial(expense),
+                    expApi.updateMembers(expense.id, expense.members)
+                ];
+
+                Promise.all(promises)                
                     .then((data) => {
                         
                         $btnSave.attr('disabled', null);
+                        App.Utils.Toast.success('Dados salvos');
                     })
                     .catch((error) => {
                         console.log('Falha ao salvar dados da despesa', error);
-                        alert('Falha ao salvar dados da despesa');
+                        App.Utils.Toast.error('Falha ao salvar dados da despesa');
                     })
-                    .finally(() => $btnSave.attr('disabled', null));
-
-                expApi.updateMembers(expense.id, expense.members)
-                    .then((data) => {
-                        
-                        $btnSave.attr('disabled', null);
-                    })
-                    .catch((error) => {
-                        console.log('Falha ao salvar dados dos membros', error);
-                        alert('Falha ao salvar dados dos membros');
-                    })
-                    .finally(() => $btnSave.attr('disabled', null));
+                    .finally(() => $btnSave.attr('disabled', null));                
             }
             catch (ex) {
                 $btnSave.attr('disabled', null);
-                alert('Falha ao salvar dados: ' + ex.message)
+                App.Utils.Toast.error('Falha ao salvar dados: ' + ex.message)
             }
         }
     };

@@ -538,3 +538,8 @@ select:focus, input:focus {
     flex: 1;
     padding: 0 10px;
 }
+
+/* Material Toast plugin */
+.mdtoast.mdt--info {
+    background-color: #1d1d1d !important;
+}

@@ -24,7 +24,7 @@ function downloadExpenses() {
             })
         })
     })
-    .catch(() => alert('Falha ao baixar despesas'));
+    .catch(() => App.Utils.Toast.error('Falha ao baixar despesas'));
 }
 
 function parseGDespExpense(gExp) {
