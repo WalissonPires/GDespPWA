@@ -3,11 +3,14 @@
     /***     
      * @param {any} options 
      * {
-     *      expense: Expense
+     *      expense: Expense,
+     *      onSave: function(data) {},
+     *      onDelete: function (data) {}
      * }
      */
     var ExpenseDetailComponent = function(options) {
 
+        const self = this;
         options = options || {};
 
         const modal = new App.Components.ModalComponent({
@@ -102,7 +105,40 @@
             const $m = $(modalEl);
 
             $m.find('[name="save"]').click(handleSaveData);
+            $m.find('[name="delete"]').click(handleDeleteExpense);
             $m.find('.card-members .body .member:not([id]) .selecao').change(handleMemberSelection);
+        }
+
+        function getExpenseOfDom() {
+
+            const $m = $(modal.getRootElement());
+            const $cardExp = $m.find('.card-expense');
+
+            const expense = {
+                id: $cardExp.find('[name="id"]').val(),
+                categoryId: $cardExp.find('[name="categoryId"]').val(),
+                originId: $cardExp.find('[name="originId"]').val(),
+                description: $cardExp.find('[name="description"]').val(),
+                price: $cardExp.find('[name="price"]').val().replace(',', '.'),
+                members: []
+            };
+
+            $m.find('.card-members .body .member:not([id])').each((i, el) => {
+
+                const $el = $(el);
+
+                if (!$el.find('.selecao')[0].checked)
+                    return;
+
+                expense.members.push({
+                    id: $el.find('[name="id"]').val() || 0,
+                    price: $el.find('.value').text().replace('R$ ', '').replace(',', '.'),
+                    guestId: $el.find('[name="guestId"]').val() || null,
+                    userId: $el.find('[name="userId"]').val() || null
+                });
+            });
+
+            return expense;
         }
 
         function handleMemberSelection() {
@@ -131,32 +167,8 @@
 
         function handleSaveData() {
 
-            const $m = $(modal.getRootElement());
-            
-            var expense = {
-                id: $m.find('[name="id"]').val(),
-                categoryId: $m.find('[name="categoryId"]').val(),
-                originId: $m.find('[name="originId"]').val(),
-                description: $m.find('[name="description"]').val(),
-                price: $m.find('[name="price"]').val().replace(',', '.'),
-                members: []
-            };
-
-            $m.find('.card-members .body .member:not([id])').each((i, el) => {
-
-                const $el = $(el);
-
-                if (!$el.find('.selecao')[0].checked)
-                    return;
-
-                expense.members.push({
-                    id: $el.find('[name="id"]').val() || 0,
-                    price: $el.find('.value').text().replace('R$ ', '').replace(',', '.'),
-                    guestId: $el.find('[name="guestId"]').val() || null,
-                    userId: $el.find('[name="userId"]').val() || null
-                });
-            });
-
+            const $m = $(modal.getRootElement());            
+            const expense = getExpenseOfDom();
             const expApi = new App.Services.ExpensesApi();
             const $btnSave = $m.find('[name="save"]');
 
@@ -174,16 +186,54 @@
                         
                         $btnSave.attr('disabled', null);
                         App.Utils.Toast.success('Dados salvos');
+
+                        typeof options.onSave === 'function' && options.onSave.call(self, getExpenseOfDom());
                     })
                     .catch((error) => {
                         console.log('Falha ao salvar dados da despesa', error);
-                        App.Utils.Toast.error('Falha ao salvar dados da despesa');
+                        App.Utils.Toast.error('Falha ao salvar dados da despesa: ' + error.message);
                     })
                     .finally(() => $btnSave.attr('disabled', null));                
             }
             catch (ex) {
                 $btnSave.attr('disabled', null);
                 App.Utils.Toast.error('Falha ao salvar dados: ' + ex.message)
+            }
+        }
+
+        function handleDeleteExpense() {
+         
+            if (!confirm('Tem certeza que deseja excluir essa despesa?'))
+                return;
+
+            const $m = $(modal.getRootElement());
+            const expenseId = $m.find('.card-expense [name="id"]').val();            
+            const $btnDel = $m.find('[name="delete"]');
+            const expApi = new App.Services.ExpensesApi();
+            
+            $btnDel.attr('disabled', 'disabled');
+            App.Utils.Toast.info('Deletando despesa...');
+            
+            try {
+
+                expApi.delete(expenseId)               
+                    .then((data) => {
+                        
+                        //$btnDel.attr('disabled', null);
+                        App.Utils.Toast.success('Despesa deletada');
+
+                        typeof options.onDelete === 'function' && options.onDelete.call(self, getExpenseOfDom());
+                        modal.hide();                        
+                    })
+                    .catch((error) => {
+                        console.log('Falha ao deletar despesa', error);
+                        App.Utils.Toast.error('Falha ao deletar despesa: ' + error.message);
+                    })
+                    ;//.finally(() => $btnDel.attr('disabled', null)); 
+            }
+            catch (ex) {
+                $btnDel.attr('disabled', null);
+                App.Utils.Toast.error('Falha ao deletar despesa: ' + ex.message)
             }
         }
     };

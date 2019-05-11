@@ -5,6 +5,7 @@
 
         const FetchUtils = App.Utils.FetchUtils;
         const BaseUrl = GDespApi.BASE_URL + '/despesas';
+        const BaseUrlv2 = GDespApi.BASE_URL + '/v2/despesas';
 
         this.getByMonth = function (month, year) {
 
@@ -91,6 +92,16 @@
                     'Content-Type': 'application/json'
                   },
                 body: JSON.stringify(members)
+            }));
+        };
+
+        this.delete = function(expenseId) {
+
+            const splitId = expenseId.split('-');
+            const url = BaseUrlv2 + '/' + splitId[0];
+
+            return FetchUtils.fetchJson(new Request(url, {
+                method: 'DELETE',                
             }));
         };
     };

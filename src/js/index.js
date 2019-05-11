@@ -1,8 +1,14 @@
-window.onload = function(e) {
+window.onload = function(e) {    
+
+    $('[name="monthExpenses"]').val(localStorage.monthExpenses || '1')
+    .change((e) => {
+
+        localStorage.monthExpenses = $(e.target).val();
+
+        downloadExpenses();
+    });
 
     downloadExpenses();
-
-    $('[name="monthExpenses"]').change(downloadExpenses);
 };
 
 function downloadExpenses() {
@@ -92,7 +98,11 @@ function createListExpensesComponent(expenses) {
 
                 return (e) => {
                    
-                    new App.Components.ExpenseDetailComponent({ expense: exp });
+                    new App.Components.ExpenseDetailComponent({ 
+                        expense: exp,
+                        //onSave: () => ;
+                        onDelete: () => domItem.remove()
+                    });
                 };
 
             })(expense));
