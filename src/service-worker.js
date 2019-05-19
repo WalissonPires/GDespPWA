@@ -1,7 +1,7 @@
 'use strict';
 
 var dataCacheName  = 'GDespDataCache';
-var cacheName = 'GDespShellCache-v1.0.29';
+var cacheName = 'GDespShellCache-v1.0.40';
 var filesToCache = [
     './',
     './index.html',
@@ -23,12 +23,17 @@ var filesToCache = [
     './js/components/expense-detail-component.js',
     './js/components/modal-component.js',
     './js/core/entities/expense-entity.js',
+    './js/core/pages.js',
     './js/core/fetch-utils.js',
     './js/core/toast.js',
     './js/core/namespace-utils.js',
+    './js/core/layout.js',
     './js/services/expenses-api.js',
     './js/services/members-api.js',
     './js/services/gdesp-api-core.js',
+    './js/services/dashboard-api.js',
+    './js/pages/expenses-page.js',
+    './js/pages/dashboard-page.js',
     './js/index.js',
     './libs/jquery/js/jquery-3.4.0.min.js',
     './libs/material-toast/mdtoast.min.js',

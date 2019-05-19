@@ -89,9 +89,10 @@
 </head>
 <body>
     <div class="main">
+        <div class="bkgd-overlay"></div>
         <header class="header">
             <div class="icon">
-                <i class="menu-icon fas fa-bars" onclick="new App.Components.ExpenseDetailComponent();"></i>
+                <i class="menu-icon fas fa-bars btn-menu"></i>
             </div>
             <div class="title">                
                 <span class="title">GDesp PWA</span>
@@ -116,12 +117,21 @@
                 -->
             </div>
         </header>
-        <div class="body">
-            <nav class="menu"></nav>
-            <div class="content p-1" id="AppContent">                
-                <div class="loader"></div>
+        <nav class="nav">
+            <div class="profile">
+                <img class="p-img" src="icon-128x128.png" alt="logo">
+                <span class="p-name">Walisson</span>
             </div>
-        </div>
+            <ul class="list">
+                <li class="item" data-page="DashboardPage">
+                    <i class="it-icon fa fa-home"></i><span class="it-text">Dashboard</span>
+                </li>
+                <li class="item" data-page="ExpensesPage">
+                    <i class="it-icon fas fa-shopping-bag"></i><span class="it-text">Despesas</span>
+                </li>
+            </ul>
+        </nav>        
+        <div class="body" id="AppContent"></div>
     </div>
 
     <div id="modal-template" class="x-modal-overlay" style="display: none;">
@@ -203,30 +213,28 @@
         </div>
     </div>
 
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker
-                    .register('./service-worker.js')
-                    .then(function() { console.log('Service Worker Registered'); });
-        }
-    </script>
-
     <script src="libs/jquery/js/jquery-3.4.0.min.js"></script>
     <script src="libs/material-toast/mdtoast.min.js"></script>
 
     <script src="js/core/namespace-utils.js"></script>
+    <script src="js/core/pages.js"></script>
     <script src="js/core/fetch-utils.js"></script>
     <script src="js/core/toast.js"></script>
     <script src="js/core/entities/expense-entity.js"></script>
+    <script src="js/core/layout.js"></script>
 
     <script src="js/services/gdesp-api-core.js"></script>
     <script src="js/services/expenses-api.js"></script>
     <script src="js/services/members-api.js"></script>
+    <script src="js/services/dashboard-api.js"></script>
     
     <script src="js/components/card-expense-component.js"></script>
     <script src="js/components/list-expense-component.js"></script>
     <script src="js/components/modal-component.js"></script>
     <script src="js/components/expense-detail-component.js"></script>
+
+    <script src="js/pages/dashboard-page.js"></script>
+    <script src="js/pages/expenses-page.js"></script>
 
     <script src="js/index.js"></script>
 </body>
