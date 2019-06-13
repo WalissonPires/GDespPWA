@@ -20,12 +20,19 @@
 
                     return x.then(members => {
     
-                        return members.map((x) => ({                                                
-                            id: 0,
-                            name: x.nome,                        
-                            userId: x.usuarioID,
-                            guestId: x.id > 0 ? x.id : null
-                        }));
+                        return members.map((x) => { 
+                            
+                            const m = { 
+                                id: 0,
+                                name: x.nome,                        
+                                userId: x.usuarioID,
+                                guestId: x.id > 0 ? x.id : null
+                            };
+
+                            m.userGuestId = App.Entities.MemberUtils.createUserGuestId(m.userId, m.guestId);
+
+                            return m;
+                        });
                     });
                 });
 

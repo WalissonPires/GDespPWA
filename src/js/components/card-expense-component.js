@@ -8,6 +8,7 @@
      */
     var CardExpenseComponent = function(options) {
 
+        options = options || {};
         const dom = $(cardHtml(options.expense))[0];
         return dom;
     };
@@ -15,7 +16,7 @@
     /***
      * @param {Expense} expense 
      */
-    const cardHtml = function(expense) {             
+    function cardHtml(expense) {             
         
         const categoryLetter = expense.category.name[0];
         const description = expense.description + (expense.totalInstallment > 1 

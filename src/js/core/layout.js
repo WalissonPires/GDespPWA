@@ -41,10 +41,7 @@
         }
 
         init();
-    };
-
-    Layout.LOADING_HTML = '<div class="wrapper-loader"><div class="loader"></div></div>';
-    Layout.LOADING_SELECTOR = '.wrapper-loader';
+    };    
 
     Layout.getMonthYear = function() {
 
@@ -53,6 +50,15 @@
             year: 2019
         };
     };        
+
+
+    Layout.LOADING_HTML = '<div class="wrapper-loader"><div class="loader"></div></div>';
+    Layout.LOADING_SELECTOR = '.wrapper-loader';
+
+    Layout.LOADING_BAR_HTML = '<div class="loading-bar"><div class="x-bar"></div></div>';
+    Layout.LOADING_BAR_SELECTOR = '.loading-bar';
+
+    Layout.NETWORK_ERROR = '<p class="danger__color p-3">Falha ao carregar dados. Verifique sua conexão com a internet</p>';
 
     App.Layout = Layout;    
 })();

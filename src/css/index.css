@@ -55,6 +55,10 @@ h4, .text-4 {
     padding-bottom: 0;
 }
 
+.wd-auto {
+    width: auto !important;
+}
+
 .x-flex {
     display: flex;
     flex-direction: row;
@@ -152,7 +156,7 @@ h4, .text-4 {
     justify-content: space-between;
     height: 55px;
     width: 100%;
-    font-size: 1.2rem;
+    font-size: 1.6rem;
     /* padding: 10px; */
     background-color: #00bcd4;
     color: #fefeff;
@@ -193,7 +197,7 @@ h4, .text-4 {
     left: -100%;
     transition: left .4s ease-in-out;
     min-width: 250px;
-    width: 90%;
+    width: 80%;
     font-size: 1.2rem;
 }
 
@@ -208,7 +212,7 @@ h4, .text-4 {
     left: 0;
     height: 100vh;
     width: 100%;
-    background-color: rgba(0,0,0,.2);
+    background-color: rgba(0,0,0,.5);
     opacity: 0;
     pointer-events: none;
     transition: opacity .4s ease-in-out;
@@ -247,11 +251,11 @@ h4, .text-4 {
 }
 
 .main > .nav > .list > .item {
-    padding: 20px;
+    padding: 15px 20px;
     border-bottom: 1px solid #e6e6e6;
     color: #666;
     font-weight: bold;
-    border-left: 3px solid transparent;
+    border-left: 5px solid transparent;
 }
 
 .main > .nav > .list > .item.active {
@@ -628,6 +632,8 @@ h4, .text-4 {
     display: flex;
     flex-direction: row;
     align-items: center;
+    border: 1px solid #bbb;
+    padding: 0 10px;
 }
 
 .input-wrapper > .append-l {
@@ -638,8 +644,11 @@ h4, .text-4 {
     margin-left: 5px;
 }
 
-.input-wrapper > input {
+.input-wrapper input,
+.input-wrapper select {
     width: 100%;
+    padding: 10px 0;
+    border: none;
 }
 
 select, input {
@@ -679,4 +688,53 @@ select:focus, input:focus {
 /* Material Toast plugin */
 .mdtoast.mdt--info {
     background-color: #1d1d1d !important;
+}
+
+/* FILTER COMPONENT */
+.select-text {
+    background-color: transparent;
+    border: none;
+    font-size: 1em;
+    padding: 0;
+    font-weight: normal;
+    color: #666;
+}
+
+.page-filter {
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: none;
+}
+
+/* ==== Loading Bar 
+   =============================== */
+.loading-bar {
+    height: 5px;
+    width: 100%;
+    position: relative;
+}
+
+.loading-bar .x-bar {
+    height: 100%;
+    width: 150px;
+    background-color: #3498db;
+    position: absolute;
+    top: 0px;
+    /* left: -42%; */
+    animation-name: loadingBarAnimation;
+    animation-duration: 5s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-delay: 0;
+}
+
+@keyframes loadingBarAnimation {
+
+    0% {
+        left: -42%;
+    }
+
+    100% {
+        left: 100%;
+    }
 }

@@ -42,6 +42,18 @@
                         message: 'Servidor respondeu em um formato inválido: ' + contentType 
                     };
                 }
+            })
+            .catch(error => {
+
+                if (error instanceof TypeError) {
+
+                    throw {
+                        status: 0,
+                        message: error.message
+                    }
+                }
+
+                throw error;
             });
 
     };
@@ -68,6 +80,60 @@
         });
 
         return _promise;
+    };
+
+    FetchUtils.treatEachResponse = function(promiseWrapper, theThen, theCatch, theAlways) {
+        
+        promiseWrapper.then(promises => {
+
+            const promisesState = [];
+
+            const fnCatch = function bindedThis(error) {
+
+                promisesState.push({ error: error, isCache: this.isCache, isNetwork: this.isNetwork });
+
+                if (promisesState.length < promises.length)
+                    return;        
+
+                let networkError = promisesState[0].isNetwork 
+                    ? promisesState[0].error 
+                    : promisesState.length === 2 && promisesState[1].isNetwork 
+                    ? promisesState[1].error
+                    : null;
+                
+                const data = {
+                    message: null
+                };
+
+                if (!networkError && error.message)
+                    data.message = erro.message;
+                else if (networkError && networkError.status === 0)
+                    data.message = 'Falha ao executar operação. Verifique sua conexão com a internet';
+                else
+                    data.message = 'Uma falha desconhecida ocorreu. Contacte o suporte técnico';                
+
+                typeof this.fnCatch === 'function' && this.fnCatch.call(null, data);
+            };
+
+
+            promises.forEach((p, i) => {
+
+                const state = {
+                    isCache: i == 1,
+                    isNetwork: i == 0,
+                    fnThen: theThen,
+                    fnCatch: theCatch,
+                    fnAlways: theAlways,
+                    // promise: p
+                };
+
+                p
+                .then(data => typeof theThen === 'function' && theThen.call(state, data))
+                .catch(fnCatch.bind(state))
+                .finally(() => typeof theAlways === 'function' && theAlways.call(state));
+
+            });
+        });
     }
 
     App.Utils.Namespace.CreateIfNotExists('App.Utils').FetchUtils = FetchUtils;

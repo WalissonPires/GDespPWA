@@ -34,14 +34,17 @@
             });                        
         };
 
-        this.getTotalMonthByCategory = function(month, year, personId) {
+        this.getTotalMonthByCategory = function(month, year, userGuestId) {
 
             const date = new Date(year, month - 1, 1);
             let url = BaseUrl + '/categorias/' + encodeURIComponent(date.toISOString());
 
-            if (personId !== undefined) {
+            if (userGuestId !== undefined) {
 
-                url += '?devedorId=' + encodeURIComponent(personId);
+                const { userId, guestId } = App.Entities.MemberUtils.parseUserGuestId(userGuestId);
+
+                url += '?devedorId=' + (userId != null ? userId : guestId);
+                url += '&isUs=' + (userId != null);
             }
 
             const promise = FetchUtils.fetchJsonWithCache(new Request(url, {
