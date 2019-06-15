@@ -6,7 +6,7 @@
 
 html, body {
     font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     color: rgb(66, 69, 78);
     background-color: #fafafa;
     overflow: hidden;
@@ -173,8 +173,11 @@ h4, .text-4 {
 .main > .header > .icon {
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 0 20px;
+    justify-content: center;    
+}
+
+.main > .header .btn-menu {
+    padding: 16px;
 }
 
 .main > .header > .actions {
@@ -335,8 +338,7 @@ h4, .text-4 {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #eee;
-    padding: 10px;
+    border-bottom: 1px solid #eee;    
     font-size: 1.5em;
     background-color: #00bcd4;
     color: #fff;
@@ -383,12 +385,17 @@ h4, .text-4 {
     margin: 0 20px;
     text-align: left;
     flex: 1;
+    padding: 10px 0;
 }
 
 .x-modal .x-close,
 .x-modal .x-actions {
    font-size: .7em;
    font-weight: normal;
+}
+
+.x-modal .x-close {
+    padding: 5px;
 }
 
 @media screen and (max-width: 825px) {
@@ -512,15 +519,15 @@ h4, .text-4 {
 /* ==== List Cards Expenses 
    ===================================== */
 .p-0 {
-    padding: 0;
+    padding: 0 !important;
 }
 
 .p-1 {
-    padding: 10px;
+    padding: 10px !important;
 }
 
 .p-2 {
-    padding: 20px;
+    padding: 20px !important;
 }
 
 .bold {
@@ -656,6 +663,7 @@ select, input {
     border: none;
     border-bottom: 1px solid #aaa;
     transition: border-color .2s ease-in;
+    font-size: 1rem;
 }
 
 select:hover, input:hover,
@@ -683,6 +691,7 @@ select:focus, input:focus {
     text-align: left;
     flex: 1;
     padding: 0 10px;
+    cursor: default;
 }
 
 /* Material Toast plugin */

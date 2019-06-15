@@ -106,6 +106,7 @@
 
             $m.find('[name="save"]').click(handleSaveData);
             $m.find('[name="delete"]').click(handleDeleteExpense);
+            $m.find('.card-members .body .member:not([id])').click(handleMemberClick);
             $m.find('.card-members .body .member:not([id]) .selecao').change(handleMemberSelection);
         }
 
@@ -139,6 +140,13 @@
             });
 
             return expense;
+        }
+
+        function handleMemberClick(e) {
+
+            const $check = $(e.currentTarget).find('.selecao');
+            $check[0].checked = !$check[0].checked;
+            $check.change();
         }
 
         function handleMemberSelection() {
