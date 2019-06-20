@@ -19,6 +19,7 @@
     function cardHtml(expense) {             
         
         const categoryLetter = expense.category.name[0];
+        const categoryColor = expense.category.color || 'gray';
         const description = expense.description + (expense.totalInstallment > 1 
             ? (' ' + expense.currentInstallment + '/' + expense.totalInstallment) : '');
         const info = new Date(expense.purchaseDate).toLocaleDateString();
@@ -32,7 +33,7 @@
         <div class="card-expense">
             <div class="content">
                 <div class="icon">
-                <span class="icon-circle">${categoryLetter}</span>
+                <span class="icon-circle" style="background-color: ${categoryColor}">${categoryLetter}</span>
                 </div>
                 <div class="detail">
                     <p class="description">${description}</p>

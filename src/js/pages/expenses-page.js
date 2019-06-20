@@ -4,6 +4,7 @@
     var ExpensesPage = function(pageEl) {
 
         var $context = $(pageEl);
+        var categories = [];
 
         function init() {
 
@@ -21,24 +22,59 @@
 
         function downloadExpenses() {
 
-            var month = parseInt($('[name="monthExpenses"]').val());
+            const month = parseInt($('[name="monthExpenses"]').val());
         
-            new App.Services.ExpensesApi().getByMonth(month, 2019)
-            .then(promises => { 
-                
+            const promiseExpenses = new App.Services.ExpensesApi().getByMonth(month, 2019);
+            const promiseCategories = new App.Services.CategoriesApi().getAll();
+
+            const treatCategories = (promises) => {
+
+                promises.forEach(x => {
+        
+                    console.log('[DownloadExpenses] Subs in promise');
+                    x.then(categoriesList => {
+                        
+                        categories = categoriesList;
+                    })
+
+                    x.catch(() => App.Utils.Toast.error('Falha ao baixar despesas'));
+                });          
+            };
+
+            const treatExpenses = (promises) => {
+                              
                 promises.forEach(x => {
         
                     console.log('[DownloadExpenses] Subs in promise');
                     x.then(gExpenses => {
                         console.log('[DownloadExpenses] Data receveid');
                         
-                        const expenses = gExpenses.map(x => parseGDespExpense(x));
+                        const expenses = gExpenses.map(x => {
+                            
+                            const exp = parseGDespExpense(x);
+                            const cat = categories.find(a => a.id === exp.category.id);
+                            exp.category.color = (cat && cat.color) || null;
+
+                            return exp;
+                        });
         
                         createListExpensesComponent(expenses);
                     })
+
+                    x.catch(() => App.Utils.Toast.error('Falha ao baixar despesas'));
+                });                                
+            };
+
+            
+            Promise.all([promiseExpenses, promiseCategories])
+                .then(results => {
+
+                    treatCategories(results[1]);
+                    setTimeout(() => treatExpenses(results[0]), 200);                    
                 })
-            })
-            .catch(() => App.Utils.Toast.error('Falha ao baixar despesas'));
+                .catch(() => App.Utils.Toast.error('Falha ao baixar despesas'));
+
+            
         }
         
         function parseGDespExpense(gExp) {
