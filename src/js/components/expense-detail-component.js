@@ -11,7 +11,9 @@
     var ExpenseDetailComponent = function(options) {
 
         const self = this;
+
         options = options || {};
+
 
         const modal = new App.Components.ModalComponent({
             dataTemplate: '#modal-expense-template',
@@ -30,7 +32,7 @@
                     x.then(membersList => {
                     
                         if (called)
-                            return;
+                            return;                        
                         
                         called = true;                
                         loadData(modalEl, membersList);
@@ -120,7 +122,7 @@
                 categoryId: $cardExp.find('[name="categoryId"]').val(),
                 originId: $cardExp.find('[name="originId"]').val(),
                 description: $cardExp.find('[name="description"]').val(),
-                price: $cardExp.find('[name="price"]').val().replace(',', '.'),
+                price: parseFloat($cardExp.find('[name="price"]').val().replace(',', '.')),
                 members: []
             };
 
@@ -132,10 +134,11 @@
                     return;
 
                 expense.members.push({
-                    id: $el.find('[name="id"]').val() || 0,
-                    price: $el.find('.value').text().replace('R$ ', '').replace(',', '.'),
-                    guestId: $el.find('[name="guestId"]').val() || null,
-                    userId: $el.find('[name="userId"]').val() || null
+                    id: parseInt($el.find('[name="id"]').val()) || 0,
+                    name: $el.find('.name').text(),
+                    price: parseFloat($el.find('.value').text().replace('R$ ', '').replace(',', '.')),
+                    guestId: parseInt($el.find('[name="guestId"]').val()) || null,
+                    userId: parseInt($el.find('[name="userId"]').val()) || null
                 });
             });
 
@@ -193,9 +196,13 @@
                     .then((data) => {
                         
                         $btnSave.attr('disabled', null);
-                        App.Utils.Toast.success('Dados salvos');
+                        App.Utils.Toast.success('Dados salvos');                        
 
-                        typeof options.onSave === 'function' && options.onSave.call(self, getExpenseOfDom());
+                        if (typeof options.onSave === 'function'){ 
+                            const exp = Object.assign({}, options.expense, getExpenseOfDom());
+                            
+                            options.onSave.call(self, exp);
+                        }
                     })
                     .catch((error) => {
                         console.log('Falha ao salvar dados da despesa', error);

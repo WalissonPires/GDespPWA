@@ -5,60 +5,94 @@
      * {
      *      expenses: Expense[],
      *      onItemAdded: function(domItem, expense) // this is ListExpensesCompoent
+     *      onItemUpdated: function(domItem, expense) // this is ListExpensesCompoent
      * }
      */
     var ListExpensesCompoent = function(options) {
 
         const self = this;
-        var groupExpenses = {};
-        options = options || {};
-        options.onItemAdded = options.onItemAdded || function() {};
+        const groupExpenses = {};
+        let $root = null;
 
-        for (let i = 0; i < options.expenses.length; i++) {
 
-            const expense = options.expenses[i];
-            const originId = expense.origin.id;
+        function constructor() {
 
-            if (groupExpenses[originId] === undefined) {
-                groupExpenses[originId] = {
-                    id: originId,
-                    name: expense.origin.name,
-                    total: 0,
-                    expenses: []
-                };
-            }
+            options = options || {};
+            options.onItemAdded = options.onItemAdded || function() {};
 
-            groupExpenses[originId].expenses.push(expense);
-            groupExpenses[originId].total += expense.price;
+            render();
+        }
+        
+
+        this.updateItem = function(expense) {
+
+            const cardEl = new App.Components.CardExpenseComponent({expense});
+            const oldItemEl = $root.find(`.card-expense[data-id="${expense.id}"]`).closest('.list-item');
+            
+            const newItemEl = $('<li class="list-item"></li>');
+            newItemEl.append(cardEl);
+
+            oldItemEl.replaceWith(newItemEl);
+            options.onItemAdded.call(self, newItemEl[0], expense);
         }
 
-        var $dom = $('<ul class="list-card"></li>');
+        this.getDom = function() {
 
-        for(var key in groupExpenses) {
+            return $root[0];
+        };
 
-            const group = groupExpenses[key];
-            const groupPrice = 'R$ ' + group.total.toFixed(2).replace('.', ',');
 
-            $dom.append(`
-            <li class="list-header" data-group-id="${group.id}">
-                <span class="title">${group.name}</span>
-                <span class="total">${groupPrice}</span>
-            </li>
-            `);
+        function render() {
 
-            for (let i = 0; i < group.expenses.length; i++) {
+            for (let i = 0; i < options.expenses.length; i++) {
 
-                const expense = group.expenses[i];
+                const expense = options.expenses[i];
+                const originId = expense.origin.id;
 
-                const $item = $('<li class="list-item"></li>');
-                $item.append(new App.Components.CardExpenseComponent({ expense: expense }));
-                $dom.append($item);
+                if (groupExpenses[originId] === undefined) {
+                    groupExpenses[originId] = {
+                        id: originId,
+                        name: expense.origin.name,
+                        total: 0,
+                        expenses: []
+                    };
+                }
 
-                options.onItemAdded.call(self, $item[0], expense);
+                groupExpenses[originId].expenses.push(expense);
+                groupExpenses[originId].total += expense.price;
             }
+
+            $dom = $('<ul class="list-card"></li>');
+
+            for(var key in groupExpenses) {
+
+                const group = groupExpenses[key];
+                const groupPrice = 'R$ ' + group.total.toFixed(2).replace('.', ',');
+
+                $dom.append(`
+                <li class="list-header" data-group-id="${group.id}">
+                    <span class="title">${group.name}</span>
+                    <span class="total">${groupPrice}</span>
+                </li>
+                `);
+
+                for (let i = 0; i < group.expenses.length; i++) {
+
+                    const expense = group.expenses[i];
+
+                    const $item = $('<li class="list-item"></li>');
+                    $item.append(new App.Components.CardExpenseComponent({ expense: expense }));
+                    $dom.append($item);
+
+                    options.onItemAdded.call(self, $item[0], expense);
+                }
+            }
+
+            $root = $('<div class="card p-0"></div>').append($dom);
         }
 
-        return $('<div class="card p-0"></div>').append($dom)[0];
+
+        constructor();
     };
 
     App.Utils.Namespace.CreateIfNotExists('App.Components').ListExpensesCompoent = ListExpensesCompoent;

@@ -5,6 +5,7 @@
 
         var $context = $(pageEl);
         var categories = [];
+        var listComp = null;
 
         function init() {
 
@@ -134,25 +135,33 @@
             
             const listOptions = {
                 expenses: expenses,
-                onItemAdded: (domItem, expense) => {
-        
-                    $(domItem).click((function(exp) {
-        
-                        return (e) => {
-                           
-                            new App.Components.ExpenseDetailComponent({ 
-                                expense: exp,
-                                //onSave: () => ;
-                                onDelete: () => domItem.remove()
-                            });
-                        };
-        
-                    })(expense));
-                }
+                onItemAdded: handleItemAddOrUpdatedListComp,
+                onItemUpdated: handleItemAddOrUpdatedListComp
             };
-            const listDom = new App.Components.ListExpensesCompoent(listOptions);
+             
+            listComp = new App.Components.ListExpensesCompoent(listOptions);
             
-            $context.empty().append(listDom);            
+            $context.empty().append(listComp.getDom());            
+        }
+
+
+        function handleItemAddOrUpdatedListComp(domItem, expense) {
+        
+            $(domItem).click((function(exp) {
+
+                return (e) => {
+                   
+                    new App.Components.ExpenseDetailComponent({ 
+                        expense: exp,
+                        onSave: (expense) => {
+
+                            listComp.updateItem(expense);
+                        },
+                        onDelete: () => domItem.remove()
+                    });
+                };
+
+            })(expense));
         }
         
 

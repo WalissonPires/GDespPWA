@@ -9,9 +9,9 @@
             .then((response) => {
 
                 const isSuccess = Math.trunc(response.status / 100) === 2;
-                const contentType = response.headers.get("content-type");
+                const contentType = (response.headers.get("content-type") || '').toLowerCase();
 
-                if (contentType === null) {
+                if (contentType === '') {
 
                     if (isSuccess) 
                         return null;
@@ -21,7 +21,22 @@
                             message: '[Falha] Servidor respondeu com status: ' + response.status 
                         };
 
-                } else if (contentType && contentType.indexOf("application/json") !== -1) {
+                }
+                else if (contentType && contentType.indexOf('text/plan') !== -1) {
+
+                    return response.text().then((data) => {
+                        
+                        if (isSuccess)
+                            return data;
+                        else
+                            throw {
+                                status: response.status,
+                                message: data,
+                                detail: null
+                            };
+                    });
+                }  
+                else if (contentType && contentType.indexOf("application/json") !== -1) {
 
                     return response.json().then((data) => {
 
