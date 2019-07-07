@@ -2,11 +2,19 @@
 
     var Layout = function() {
 
-        const $monthEl = $('[name="monthExpenses"]');
+        const $monthYearEl = $('[name="monthYearFilter"]');
 
         function init () {
 
-            $monthEl.val(localStorage.monthExpenses || '1');
+            var currentDate = new Date();
+            var month = localStorage.monthExpenses || (currentDate.getMonth() + 1);
+            var year = localStorage.yearExpenses || currentDate.getFullYear();
+
+            $monthYearEl.data('month', month);
+            $monthYearEl.data('year', year);
+
+            var monthName = $monthYearEl.closest('.popup-content').find('[name="monthExpenses"] option[value="' + month + '"]').text();
+            updateMonthYearText(monthName, year);
 
             bindEvents();
         }
@@ -15,11 +23,50 @@
 
             $('.btn-menu').click(() => $('.main').toggleClass('nav-show'));
             $('.bkgd-overlay,[data-page]').click(() =>  $('.main').removeClass('nav-show'));
-            $('[data-page]').click(handleMenuPage);
+            $('[data-page]').click(handleMenuPage);            
+
+            new PopupMenu({
+                target: $monthYearEl,
+                onPrepare: ($popup, $toggle) => {
+
+                    $popup.addClass('monthYear');
+
+                    var $selYear = $popup.find('[name="yearExpenses"]')
+                    var currentYear = new Date().getFullYear();
+                    for (let i = currentYear - 5, len = currentYear + 5; i <= len; i++) {
+
+                        $selYear.append(new Option(i, i));
+                    }
+                },
+                onReady: ($popup, $toggle) => {
         
-            $monthEl.change((e) => {
-        
-                localStorage.monthExpenses = $(e.target).val();                       
+                    $popup.find('[name="monthExpenses"]').val(localStorage.monthExpenses);
+                    $popup.find('[name="yearExpenses"]').val(localStorage.yearExpenses);                    
+
+                    $popup.find('select').change(function(e) {
+
+                        var $content = $(e.target).parent();
+
+                        var month = $content.find('[name="monthExpenses"]').val();
+                        var year = $content.find('[name="yearExpenses"]').val();
+
+                        localStorage.monthExpenses = month;
+                        localStorage.yearExpenses = year;
+
+                        $monthYearEl.data('month', month);
+                        $monthYearEl.data('year', year);
+
+                        var monthName = $content.find('[name="monthExpenses"] option[value="' + month + '"]').text();
+                        updateMonthYearText(monthName, year);                        
+                    });
+                },
+                onClose: () => {
+
+                    var month = $monthYearEl.data('month');            
+                    var year = $monthYearEl.data('year');
+
+                    $(document).trigger('monthYearChange', [ month, year ]);
+                }
             });
         }
 
@@ -40,14 +87,19 @@
                 App.Utils.Pages.activePage(pageName);
         }
 
+        function updateMonthYearText(month, year) {
+         
+            $monthYearEl.html(`<i class="far fa-calendar-alt mr-1"></i><span>${month}/${year}</span>`);
+        }
+
         init();
     };    
 
     Layout.getMonthYear = function() {
 
         return {
-            month: parseInt($('[name="monthExpenses"]').val()),
-            year: 2019
+            month: parseInt($('[name="monthYearFilter"]').data('month')),
+            year: parseInt($('[name="monthYearFilter"]').data('year'))
         };
     };        
 

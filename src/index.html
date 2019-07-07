@@ -98,20 +98,27 @@
                 <span class="title">GDesp</span>
             </div>
             <div class="actions">
-                <select name="monthExpenses">
-                    <option value="1">JAN</option>
-                    <option value="2">FEV</option>
-                    <option value="3">MAR</option>
-                    <option value="4">ABR</option>
-                    <option value="5">MAI</option>
-                    <option value="6">JUN</option>
-                    <option value="7">JUL</option>
-                    <option value="8">AGO</option>
-                    <option value="9">SET</option>
-                    <option value="10">OUT</option>
-                    <option value="11">NOV</option>
-                    <option value="12">DEZ</option>
-                </select>
+                <div class="popup-content">
+                    <span class="popup-toggle" name="monthYearFilter"><i class="far fa-calendar-alt mr-1"></i><span>JAN/2019</span></span>
+                    <div class="popup-menu">
+                        <select name="monthExpenses">
+                            <option value="1">JAN</option>
+                            <option value="2">FEV</option>
+                            <option value="3">MAR</option>
+                            <option value="4">ABR</option>
+                            <option value="5">MAI</option>
+                            <option value="6">JUN</option>
+                            <option value="7">JUL</option>
+                            <option value="8">AGO</option>
+                            <option value="9">SET</option>
+                            <option value="10">OUT</option>
+                            <option value="11">NOV</option>
+                            <option value="12">DEZ</option>
+                        </select>
+                        <select name="yearExpenses"></select>
+                    </div>
+                </div>
+                
                 <!--
                 <span class="action"><i class="fas fa-ellipsis-v"></i></span>
                 -->
@@ -236,6 +243,7 @@
     <script src="js/components/modal-component.js"></script>
     <script src="js/components/expense-detail-component.js"></script>
     <script src="js/components/filter-component.js"></script>
+    <script src="js/components/popup-component.js"></script>
 
     <script src="js/pages/dashboard-page.js"></script>
     <script src="js/pages/expenses-page.js"></script>

@@ -4,7 +4,6 @@
 
         const dashApi = new App.Services.DashboardApi();
         const $context = $(pageEl);
-        const $monthEl = $('[name="monthExpenses"]');
 
         let $cardPeople = null;
         let $cardCategories = null;
@@ -47,7 +46,7 @@
             $context.append($cardPeople);
             $context.append($cardCategories);
 
-            $monthEl.change(handleMonthChange);
+            $(document).on('monthYearChange', handleMonthChange);
 
             downloadCardsData();
 

@@ -11,7 +11,7 @@
 
             $context.append(App.Layout.LOADING_HTML);
 
-            $('[name="monthExpenses"]').change((e) => {
+            $(document).on('monthYearChange', (e, month, year) => {
             
                 downloadExpenses();
             });
@@ -23,9 +23,9 @@
 
         function downloadExpenses() {
 
-            const month = parseInt($('[name="monthExpenses"]').val());
+            var date = App.Layout.getMonthYear();
         
-            const promiseExpenses = new App.Services.ExpensesApi().getByMonth(month, 2019);
+            const promiseExpenses = new App.Services.ExpensesApi().getByMonth(date.month, date.year);
             const promiseCategories = new App.Services.CategoriesApi().getAll();
 
             const treatCategories = (promises) => {
