@@ -25,7 +25,7 @@
             $('.bkgd-overlay,[data-page]').click(() =>  $('.main').removeClass('nav-show'));
             $('[data-page]').click(handleMenuPage);            
 
-            new PopupMenu({
+            new App.Components.PopupMenu({
                 target: $monthYearEl,
                 onPrepare: ($popup, $toggle) => {
 

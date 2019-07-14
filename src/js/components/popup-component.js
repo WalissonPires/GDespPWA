@@ -1,77 +1,91 @@
-/**
-* options
-  {
-        target: string | JQuery | HtmlElement,
-        onPrepare: ($popup, $toggle) => void,
-        onReady: ($popupMenuElement) => void,
-        onClose: () => void,
-  }
+(function(){
 
-*  sample:
-    new PopupMenu({
-        target: '.popup-toggle',        
-        onReady: ($popup, $toggle) => {
-
-            $popup.click(() => alert('click'));
-        }
-    })
-*/
-function PopupMenu(options) {
-
-	var _this = this;
-
-	function constructor() {
-
-		options = options || {};
-
-		if (options.target === undefined)
-			throw new Error('Informe o elemento target');
-		
-    	$(options.target).on('click', handlePopupToggleClick);
+    /**
+    * options
+    {
+            target: string | JQuery | HtmlElement,
+            onPrepare: ($popup, $toggle) => void,
+            onReady: ($popupMenuElement) => void,
+            onClose: () => void,
     }
 
-    function handlePopupToggleClick(e) {
+    *  sample:
+        new PopupMenu({
+            target: '.popup-toggle',        
+            onReady: ($popup, $toggle) => {
 
-        console.log('toggle', e);
+                $popup.click(() => alert('click'));
+            }
+        })
+    */
+    var PopupMenu = function (options) {
 
-        var $toggle = $(e.target);
-        var $popup = $toggle.closest('.popup-content').find('.popup-menu').clone();
-        if ($popup.length === 0)
-            return;
+        var _this = this;
 
-        if (typeof options.onPrepare === 'function')
-            options.onPrepare.call(_this, $popup, $toggle);
+        function constructor() {
+
+            options = options || {};
+
+            if (options.target === undefined)
+                throw new Error('Informe o elemento target');
             
-        var $popupOverlay = $('<div class="popup-overlay"></div>');
-        $popupOverlay.click(handleOverlayClick); 
-        $popupOverlay.append($popup);
-        $popupOverlay.appendTo(document.body);    
+            $(options.target).on('click', handlePopupToggleClick);
+        }
 
-        var posX = e.pageX;
-        var posY = e.pageY + $toggle[0].offsetHeight ;
+        function handlePopupToggleClick(e) {
 
-        if (posX + $popup[0].offsetWidth > $(window).width())
-            posX = $(window).width() - $popup[0].offsetWidth - 5/*space free*/;	
+            console.log('toggle', e);
 
-        $popup.css('top', posY);
-        $popup.css('left', posX);
-        $popup.css('display', 'block');
+            var $toggle = $(e.target);
+            var $popup = $toggle.closest('.popup-content').find('.popup-menu').clone();
+            if ($popup.length === 0)
+                return;
 
-		if (typeof options.onReady === 'function')
-			options.onReady.call(_this, $popup, $toggle);
-    }
+            if (typeof options.onPrepare === 'function')
+                options.onPrepare.call(_this, $popup, $toggle);
+                
+            var $popupOverlay = $('<div class="popup-overlay"></div>');
+            $popupOverlay.click(handleOverlayClick); 
+            $popupOverlay.append($popup);
+            $popupOverlay.appendTo(document.body);    
 
-    function handleOverlayClick(e) {
+            var posX = e.pageX;
+            var posY = e.pageY + $toggle[0].offsetHeight ;
 
-        if (!$(e.target).is('.popup-overlay'))
-            return;
+            if (posX + $popup[0].offsetWidth > $(window).width())
+                posX = $(window).width() - $popup[0].offsetWidth - 5/*space free*/;	
 
-        $(e.target).remove();
+            $popup.css('top', posY);
+            $popup.css('left', posX);
+            $popup.css('display', 'block');
 
-        if (typeof options.onClose === 'function')
-            options.onClose.call(_this);
-    }
+            if (typeof options.onReady === 'function')
+                options.onReady.call(_this, $popup, $toggle);
+        }
+
+        function handleOverlayClick(e) {
+
+            if (!$(e.target).is('.popup-overlay'))
+                return;
+
+            $(e.target).remove();
+
+            if (typeof options.onClose === 'function')
+                options.onClose.call(_this);
+        }
 
 
-	constructor();
-}
+        this.hide = function() {
+
+            $('.popup-overlay').remove();
+
+            if (typeof options.onClose === 'function')
+                options.onClose.call(_this);
+        };
+
+
+        constructor();
+    };
+
+    App.Utils.Namespace.CreateIfNotExists('App.Components').PopupMenu = PopupMenu;
+})();

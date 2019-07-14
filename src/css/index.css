@@ -584,6 +584,7 @@ h4, .text-4 {
     border-radius: 50%;
     height: 2.5em;
     width: 2.5em;
+    min-width: 2.5em;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -762,7 +763,7 @@ select:focus, input:focus {
 
 /* === Popup 
    ========================== */
-   .popup-menu {
+.popup-menu {
     display: none;
     position: absolute;
     top: 0;
@@ -770,6 +771,8 @@ select:focus, input:focus {
     background-color: #fff;
     box-shadow: 0 0 5px rgba(0,0,0,.4);
     border-radius: 2px;
+    max-height: 300px;
+    overflow-y: auto;   
 }
 
 .popup-overlay {
@@ -778,7 +781,21 @@ select:focus, input:focus {
     left: 0;
     right: 0;
     bottom: 0;
+    z-index: 20;
 }
+
+
+.popup-list {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .popup-list .popup-item {
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
 
 /* === Menu lista
    ==================================== */

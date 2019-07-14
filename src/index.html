@@ -166,16 +166,20 @@
                     <p class="title-s">Despesa</p>            
                     <div class="body">
                         <input name="id" type="hidden" >
-                        <input name="categoryId" type="hidden" >
                         <input name="originId" type="hidden" >
                         <div class="row mb-4">
                             <div class="col-md-12">
                                 <div class="input-wrapper">
                                     <div class="append-l">
-                                        <select name="category.id" class="font-aws px-0 wd-auto" title="Categoria" style="color: #ad7bc1;">
-                                            <option></option>
-                                            <option></option>
-                                        </select>
+                                        <div class="popup-content popup-categories">
+                                            <input name="category.id" type="hidden" />
+                                            <input name="category.color" type="hidden" />
+                                            <input name="category.name" type="hidden" />
+                                            <span class="popup-toggle" style="font-size: .6em;">
+                                                <span class="icon-circle" style="font-size: .9em;">-</span>
+                                            </span>
+                                            <div class="popup-menu"></div>
+                                        </div>                                        
                                     </div>
                                     <input name="description" type="text" placeholder="Descrição">
                                     <div class="append-r">

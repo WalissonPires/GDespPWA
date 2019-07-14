@@ -134,6 +134,8 @@
             promises.forEach((p, i) => {
 
                 const state = {
+                    index: i,
+                    total: promises.length,
                     isCache: i == 1,
                     isNetwork: i == 0,
                     fnThen: theThen,

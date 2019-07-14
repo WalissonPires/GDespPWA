@@ -1,4 +1,4 @@
-(function(){
+(function () {
 
     /***     
      * @param {any} options 
@@ -8,7 +8,7 @@
      *      onDelete: function (data) {}
      * }
      */
-    var ExpenseDetailComponent = function(options) {
+    var ExpenseDetailComponent = function (options) {
 
         const self = this;
 
@@ -22,55 +22,117 @@
 
         function modalDone(modalEl) {
 
-            let called = false;
+            let calledMembers = false;
+            let calledCategories = false;
 
-            new App.Services.MembersApi().getAll()            
-            .then(promises => { 
-                
-                promises.forEach(x => {
+            new App.Components.PopupMenu({
+                target: $(modalEl).find('.popup-categories .popup-toggle'),
+                onPrepare: ($popup) => $popup.addClass('popup-list'),
+                onReady: function bindedThis($popup) {
 
-                    x.then(membersList => {
-                    
-                        if (called)
-                            return;                        
+                    const popupComp = this;
+
+                    $popup.find('.popup-item').click((e) => {
+
+                        const $item = $(e.currentTarget);
+
+                        const category = {
+                            id: $item.find('[data-id]').attr('data-id'),
+                            name: $item.find('[name="category.name"]').text(),
+                            color: $item.find('[data-color]').attr('data-color'),
+                            iconCircle: $item.find('.icon-circle').clone().removeClass('mr-3')
+                        }
+
+                        $popupContent = $(modalEl).find('.popup-categories');
                         
-                        called = true;                
-                        loadData(modalEl, membersList);
-                        bindEvents(modalEl);
+                        $popupContent.find('[name="category.id"]').val(category.id);
+                        $popupContent.find('[name="category.name"]').val(category.name);
+                        $popupContent.find('[name="category.color"]').val(category.color);
+                        $popupContent.find('.popup-toggle').html(category.iconCircle);
 
-                        const $m = $(modalEl);
-                        $m.find('.wrapper-loader').remove();
-                        $m.find('.wrapper-body').attr('style', null);
-                        $m.find('[name="save"]').attr('disabled', null);
+                        popupComp.hide();
                     });
-                })
-            })            
-            .catch(() => {
-
-                modal.hide();
-                App.Utils.Toast.error('Falha ao baixar dados');
+                }                
             });
+
+            const $popupTemplate = $('#modal-expense-template .popup-categories .popup-menu');
+            
+            if ($popupTemplate.children().length === 0) {
+
+                const categoriesPromises = new App.Services.CategoriesApi().getAll();
+                App.Utils.FetchUtils.treatEachResponse(categoriesPromises, 
+                    function bindedThis(categories) {
+
+                        // if (calledCategories) 
+                        //     return;
+
+                        // calledCategories = true;
+
+                        const contents = [ $popupTemplate ];
+
+                        const $popupModel = $(modalEl).find('.popup-categories .popup-menu');
+                        contents.push($popupModel);
+
+                        for(const cat of categories) {
+
+                            contents.forEach(x => x.append(`<span class="popup-item"><span class="icon-circle mr-3" style="font-size: .9em; background-color: ${cat.color}">${cat.name[0]}</span><span name="category.name" data-id="${cat.id}" data-color="${cat.color}">${cat.name}</span></span>`));
+                        }                                            
+                    },
+                    (error) => {
+
+                        App.Utils.Toast.error('Falha ao baixar categorias. ' + error.message);
+                    });
+            }
+
+            new App.Services.MembersApi().getAll()
+                .then(promises => {
+
+                    promises.forEach(x => {
+
+                        x.then(membersList => {
+
+                            if (calledMembers)
+                                return;
+
+                            calledMembers = true;
+                            loadData(modalEl, membersList);
+                            bindEvents(modalEl);
+
+                            const $m = $(modalEl);
+                            $m.find('.wrapper-loader').remove();
+                            $m.find('.wrapper-body').attr('style', null);
+                            $m.find('[name="save"]').attr('disabled', null);
+                        });
+                    })
+                })
+                .catch(() => {
+
+                    modal.hide();
+                    App.Utils.Toast.error('Falha ao baixar dados');
+                });
 
         }
 
-        function loadData(modalEl, membersList) {            
+        function loadData(modalEl, membersList) {
 
             const $m = $(modalEl);
             const exp = options.expense;
 
             $m.find('[name="id"]').val(exp.id);
-            $m.find('[name="categoryId"]').val(exp.category && exp.category.id);
+            $m.find('[name="category.id"]').val(exp.category && exp.category.id);
+            $m.find('.popup-categories .popup-toggle .icon-circle')
+                .css('background-color', exp.category.color).html(exp.category.name[0]),
             $m.find('[name="originId"]').val(exp.origin && exp.origin.id);
             $m.find('[name="description"]').val(exp.description);
             $m.find('[name="price"]').val(exp.price);
-            $m.find('[name="dueDate"]').val(exp.dueDate.split('T')[0]); 
+            $m.find('[name="dueDate"]').val(exp.dueDate.split('T')[0]);
             exp.totalInstallment > 1 && $m.find('.portion')
                 .html(exp.currentInstallment + '/' + exp.totalInstallment);
 
             const members = exp.members.slice();
             membersList.forEach(x => {
 
-                if (members.find(y => (y.guestId !== null && y.guestId === x.guestId) 
+                if (members.find(y => (y.guestId !== null && y.guestId === x.guestId)
                     || (y.userId !== null && y.userId === x.userId)))
                     return;
 
@@ -96,7 +158,7 @@
                 $memberEl.find('[name="guestId"]').val(x.guestId);
                 $memberEl.find('.selecao')[0].checked = x.price > 0;
                 $memberEl.find('.name').html(x.name);
-                $memberEl.find('.value').html('R$ ' + x.price);                
+                $memberEl.find('.value').html('R$ ' + x.price);
 
                 $membersContent.append($memberEl);
             });
@@ -119,7 +181,12 @@
 
             const expense = {
                 id: $cardExp.find('[name="id"]').val(),
-                categoryId: $cardExp.find('[name="categoryId"]').val(),
+                categoryId: $cardExp.find('[name="category.id"]').val(),
+                category: {
+                    id: $cardExp.find('[name="category.id"]').val(),
+                    name: $cardExp.find('[name="category.name"]').val(),
+                    color: $cardExp.find('[name="category.color"]').val()
+                },
                 originId: $cardExp.find('[name="originId"]').val(),
                 description: $cardExp.find('[name="description"]').val(),
                 price: parseFloat($cardExp.find('[name="price"]').val().replace(',', '.')),
@@ -162,7 +229,7 @@
                 $m.find('.card-members .body .member:not([id]) .value').html('R$ 0');
                 return;
             }
-            
+
             const price = parseFloat($m.find('[name="price"]').val().replace(',', '.'));
             const partial = price / selecteds;
 
@@ -178,7 +245,7 @@
 
         function handleSaveData() {
 
-            const $m = $(modal.getRootElement());            
+            const $m = $(modal.getRootElement());
             const expense = getExpenseOfDom();
             const expApi = new App.Services.ExpensesApi();
             const $btnSave = $m.find('[name="save"]');
@@ -192,15 +259,15 @@
                     expApi.updateMembers(expense.id, expense.members)
                 ];
 
-                Promise.all(promises)                
+                Promise.all(promises)
                     .then((data) => {
-                        
-                        $btnSave.attr('disabled', null);
-                        App.Utils.Toast.success('Dados salvos');                        
 
-                        if (typeof options.onSave === 'function'){ 
+                        $btnSave.attr('disabled', null);
+                        App.Utils.Toast.success('Dados salvos');
+
+                        if (typeof options.onSave === 'function') {
                             const exp = Object.assign({}, options.expense, getExpenseOfDom());
-                            
+
                             options.onSave.call(self, exp);
                         }
                     })
@@ -208,7 +275,7 @@
                         console.log('Falha ao salvar dados da despesa', error);
                         App.Utils.Toast.error('Falha ao salvar dados da despesa: ' + error.message);
                     })
-                    .finally(() => $btnSave.attr('disabled', null));                
+                    .finally(() => $btnSave.attr('disabled', null));
             }
             catch (ex) {
                 $btnSave.attr('disabled', null);
@@ -217,28 +284,28 @@
         }
 
         function handleDeleteExpense() {
-         
+
             if (!confirm('Tem certeza que deseja excluir essa despesa?'))
                 return;
 
             const $m = $(modal.getRootElement());
-            const expenseId = $m.find('.card-expense [name="id"]').val();            
+            const expenseId = $m.find('.card-expense [name="id"]').val();
             const $btnDel = $m.find('[name="delete"]');
             const expApi = new App.Services.ExpensesApi();
-            
+
             $btnDel.attr('disabled', 'disabled');
             App.Utils.Toast.info('Deletando despesa...');
-            
+
             try {
 
-                expApi.delete(expenseId)               
+                expApi.delete(expenseId)
                     .then((data) => {
-                        
+
                         //$btnDel.attr('disabled', null);
                         App.Utils.Toast.success('Despesa deletada');
 
                         typeof options.onDelete === 'function' && options.onDelete.call(self, getExpenseOfDom());
-                        modal.hide();                        
+                        modal.hide();
                     })
                     .catch((error) => {
                         console.log('Falha ao deletar despesa', error);
