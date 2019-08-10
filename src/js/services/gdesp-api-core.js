@@ -1,10 +1,12 @@
 (function(){
-    'use strict';
+    'use strict';    
 
     var GDespApi = {
-        //BASE_URL: 'https://wprm.dlinkddns.com/GDespApi/API'
-        //BASE_URL: 'http://localhost:5001/API'
-        BASE_URL: 'http://localhost:8082/GDespApi/API'
+        BASE_URL: window.location.hash === '#local' 
+            ? 'http://localhost:8082/GDespApi/API'
+            : window.location.hash === '#debug'
+                ? 'http://localhost:5001/API'
+                : 'https://wprm.dlinkddns.com/GDespApi/API'
     };
 
     App.Utils.Namespace.CreateIfNotExists('App.Services').GDespApi = GDespApi;
