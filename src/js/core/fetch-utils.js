@@ -124,8 +124,12 @@
                     data.message = erro.message;
                 else if (networkError && networkError.status === 0)
                     data.message = 'Falha ao executar operação. Verifique sua conexão com a internet';
-                else
-                    data.message = 'Uma falha desconhecida ocorreu. Contacte o suporte técnico';                
+                else {
+                    data.message = 'Uma falha desconhecida ocorreu. Contacte o suporte técnico';  
+
+                    console.error(data.message);
+                }
+                                  
 
                 typeof this.fnCatch === 'function' && this.fnCatch.call(null, data);
             };

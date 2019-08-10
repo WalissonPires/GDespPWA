@@ -10,11 +10,8 @@
      */
     var ExpenseDetailComponent = function (options) {
 
-        const self = this;
-
         options = options || {};
-
-
+        const self = this;        
         const modal = new App.Components.ModalComponent({
             dataTemplate: '#modal-expense-template',
             onDone: modalDone
@@ -119,9 +116,13 @@
             const exp = options.expense;
 
             $m.find('[name="id"]').val(exp.id);
-            $m.find('[name="category.id"]').val(exp.category && exp.category.id);
-            $m.find('.popup-categories .popup-toggle .icon-circle')
-                .css('background-color', exp.category.color).html(exp.category.name[0]),
+            if (exp.category) {
+                $m.find('[name="category.id"]').val(exp.category.id);
+                $m.find('[name="category.name"]').val(exp.category.name);
+                $m.find('[name="category.color"]').val(exp.category.color);
+                $m.find('.popup-categories .popup-toggle .icon-circle')
+                    .css('background-color', exp.category.color).html(exp.category.name[0]);
+            }
             $m.find('[name="originId"]').val(exp.origin && exp.origin.id);
             $m.find('[name="description"]').val(exp.description);
             $m.find('[name="price"]').val(exp.price);
@@ -269,6 +270,7 @@
                             const exp = Object.assign({}, options.expense, getExpenseOfDom());
 
                             options.onSave.call(self, exp);
+                            modal.hide();
                         }
                     })
                     .catch((error) => {

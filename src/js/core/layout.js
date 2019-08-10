@@ -13,7 +13,7 @@
             $monthYearEl.data('month', month);
             $monthYearEl.data('year', year);
 
-            var monthName = $monthYearEl.closest('.popup-content').find('[name="monthExpenses"] option[value="' + month + '"]').text();
+            var monthName = getMonthName(parseInt(month));
             updateMonthYearText(monthName, year);
 
             bindEvents();
@@ -22,33 +22,39 @@
         function bindEvents() {
 
             $('.btn-menu').click(() => $('.main').toggleClass('nav-show'));
+            $('[name="addExpense"]').click(handleAddExpense);
             $('.bkgd-overlay,[data-page]').click(() =>  $('.main').removeClass('nav-show'));
             $('[data-page]').click(handleMenuPage);            
 
-            new App.Components.PopupMenu({
+            const popupMenu = new App.Components.PopupMenu({
                 target: $monthYearEl,
                 onPrepare: ($popup, $toggle) => {
 
                     $popup.addClass('monthYear');
 
-                    var $selYear = $popup.find('[name="yearExpenses"]')
-                    var currentYear = new Date().getFullYear();
-                    for (let i = currentYear - 5, len = currentYear + 5; i <= len; i++) {
+                    const $selMonthYear = $popup.find('[name="monthYearList"]');
+                    const currentYear = new Date().getFullYear();
 
-                        $selYear.append(new Option(i, i));
+                    for (let year = currentYear - 5, len = currentYear + 5; year <= len; year++) {
+
+                        for (let month = 1; month <= 12; month++) {                            
+                            $selMonthYear.append(new Option(getMonthName(month) + ' / ' + year, month + '/' + year));
+                        }
                     }
                 },
-                onReady: ($popup, $toggle) => {
-        
-                    $popup.find('[name="monthExpenses"]').val(localStorage.monthExpenses);
-                    $popup.find('[name="yearExpenses"]').val(localStorage.yearExpenses);                    
+                onReady: ($popup, $toggle) => {                            
+
+                    const monthYearSelected = localStorage.monthExpenses + '/' + localStorage.yearExpenses;
+
+                    $popup.find('[name="monthYearList"]').val(monthYearSelected);
 
                     $popup.find('select').change(function(e) {
 
-                        var $content = $(e.target).parent();
+                        const $content = $(e.target).parent();
+                        const monthYearSplit = $content.find('[name="monthYearList"]').val().split('/');
 
-                        var month = $content.find('[name="monthExpenses"]').val();
-                        var year = $content.find('[name="yearExpenses"]').val();
+                        const month = monthYearSplit[0];
+                        const year = monthYearSplit[1];
 
                         localStorage.monthExpenses = month;
                         localStorage.yearExpenses = year;
@@ -56,17 +62,21 @@
                         $monthYearEl.data('month', month);
                         $monthYearEl.data('year', year);
 
-                        var monthName = $content.find('[name="monthExpenses"] option[value="' + month + '"]').text();
-                        updateMonthYearText(monthName, year);                        
+                        var monthName = getMonthName(parseInt(month));
+                        updateMonthYearText(monthName, year);   
+                        
+                        $(document).trigger('monthYearChange', [ month, year ]);
+
+                        popupMenu.hide();
                     });
-                },
+                }/*,
                 onClose: () => {
 
                     var month = $monthYearEl.data('month');            
                     var year = $monthYearEl.data('year');
 
                     $(document).trigger('monthYearChange', [ month, year ]);
-                }
+                }*/
             });
         }
 
@@ -90,6 +100,29 @@
         function updateMonthYearText(month, year) {
          
             $monthYearEl.html(`<i class="far fa-calendar-alt mr-1"></i><span>${month}/${year}</span>`);
+        }
+
+        function handleAddExpense(e) {
+
+            alert('Adicionar');
+        }
+
+        function getMonthName(month) {
+
+            switch(month) {
+                case 1: return 'JAN';
+                case 2: return 'FEV';
+                case 3: return 'MAR';
+                case 4: return 'ABR';
+                case 5: return 'MAI';
+                case 6: return 'JUN';
+                case 7: return 'JUL';
+                case 8: return 'AGO';
+                case 9: return 'SET';
+                case 10: return 'OUT';
+                case 11: return 'NOV';
+                case 12: return 'DEZ';
+            }
         }
 
         init();

@@ -12,7 +12,7 @@
     *  sample:
         new PopupMenu({
             target: '.popup-toggle',        
-            onReady: ($popup, $toggle) => {
+            onReady: (this: PopupMenu, $popup, $toggle) => {
 
                 $popup.click(() => alert('click'));
             }
@@ -50,7 +50,13 @@
             $popupOverlay.appendTo(document.body);    
 
             var posX = e.pageX;
-            var posY = e.pageY + $toggle[0].offsetHeight ;
+            var posY = e.pageY + $toggle[0].offsetHeight ;            
+            
+            if (isNaN(parseFloat(posX)) || isNaN(parseFloat(posY))) {
+             
+                posX = $(window).width() / 2 - $popup.width() / 2;
+                posY = 100;
+            }
 
             if (posX + $popup[0].offsetWidth > $(window).width())
                 posX = $(window).width() - $popup[0].offsetWidth - 5/*space free*/;	

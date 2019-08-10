@@ -148,9 +148,14 @@
         function handleItemAddOrUpdatedListComp(domItem, expense) {
         
             $(domItem).click((function(exp) {
-
+                
                 return (e) => {
                    
+                    const $target = $(e.target);
+                    const isCategoryIcon = $target.is('.icon,.icon-circle');                    
+                    if (isCategoryIcon)
+                        return;
+
                     new App.Components.ExpenseDetailComponent({ 
                         expense: exp,
                         onSave: (expense) => {
@@ -159,6 +164,33 @@
                         },
                         onDelete: () => domItem.remove()
                     });
+                };
+
+            })(expense));
+
+            $(domItem).find('.icon').click((function(exp) {
+
+                return (e) => {   
+                
+                    new App.Components.PopupCategoriesComponent({
+                        target: e.currentTarget,
+                        onSelected: (cat) => {
+
+                            exp.categoryId = cat.id;
+                            exp.category = cat;
+
+                            new App.Services.ExpensesApi().updatePartial({
+                                id: exp.id,
+                                categoryId: exp.categoryId
+                            })
+                                .then(() => {
+
+                                    listComp.updateItem(exp);
+                                })
+                                .catch(error => App.Utils.Toast.error('Falha ao alterar categoria: ' + error.message));                                                       
+                        }
+                    });
+                
                 };
 
             })(expense));
