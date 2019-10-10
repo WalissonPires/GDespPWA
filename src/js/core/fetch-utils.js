@@ -127,7 +127,7 @@
                 else {
                     data.message = 'Uma falha desconhecida ocorreu. Contacte o suporte técnico';  
 
-                    console.error(data.message);
+                    console.error({ error, networkError });
                 }
                                   
 

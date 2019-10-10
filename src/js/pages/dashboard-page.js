@@ -1,5 +1,61 @@
 (function(){
 
+    function MonthsInYear() {
+
+        var d;
+        var meses;
+
+        (function constructor() {
+
+            d = new Date();
+            meses = {};
+        
+            for (var i = 0; i < 12; i++) {
+        
+                var key = dateKey(d.getFullYear(), d.getMonth());
+                meses[key] = { month: d.getMonth() + 1 };
+        
+                d.setMonth(d.getMonth() - 1);
+            }
+        })();
+
+        function dateKey(year, month) {
+
+            return year + '_' + (month < 10 ? '0': '') + month;
+        }
+
+        function monthsKeysSorted() {
+
+            return Object.keys(meses).sort();
+        }
+    
+        this.setValue = function (year, month, value) {
+    
+            var key = dateKey(year, month);
+            if (meses[key] !== undefined)
+                meses[key].value = value;
+        };
+    
+        this.getMonths = function() {
+    
+            return monthsKeysSorted().map(x => meses[x].month);
+        };
+    
+        this.getValues = function() {
+    
+            return monthsKeysSorted().map(x => meses[x].value);
+        };
+    
+        this.setAll = function(value) {
+    
+            Object.keys(meses).forEach(x => {
+                meses[x].value = value; 
+            });
+        };
+
+    }
+
+
     var DashboardPage = function(pageEl) {
 
         const dashApi = new App.Services.DashboardApi();
@@ -153,15 +209,22 @@
                             categoryMap[categ.name] = {
                                 name: categ.name,
                                 color: categ.color,
-                                months: new Array(12).fill(undefined)
+                                monthsYear: new MonthsInYear(),
                             };
+
+                            categoryMap[categ.name].monthsYear.setAll(undefined);
                         }
         
                         const date = new Date(categ.date);
-                        categoryMap[categ.name].months[date.getMonth()] = categ.value.toFixed(2);
+                        categoryMap[categ.name].monthsYear.setValue(date.getFullYear(), date.getMonth(), categ.value.toFixed(2));
                     }
-        
-                    const chartData = Object.keys(categoryMap).map(key => categoryMap[key]);                    
+                            
+                    const chartData = [];                    
+                    Object.keys(categoryMap).forEach(key => {
+                    
+                        categoryMap[key].months = categoryMap[key].monthsYear.getValues();
+                        chartData.push(categoryMap[key]);
+                    });
 
                     const canvas = $('<canvas></canvas>')[0];
                     $cardCategoriesInYear.find('.body').empty().append(canvas);
@@ -188,20 +251,27 @@
                     for (let i = 0; i < data.length; i++) {
         
                         const categ = data[i];
-        
+                                
                         if (dataMap['Total'] === undefined) {
                             dataMap['Total'] = {
                                 name: categ.name,
                                 color: 'red',
-                                months: new Array(12).fill(undefined)
+                                monthsYear: new MonthsInYear(),                               
                             };
+
+                            dataMap['Total'].monthsYear.setAll(undefined);
                         }
         
                         const date = new Date(categ.date);
-                        dataMap['Total'].months[date.getMonth()] = categ.value.toFixed(2);
+                        dataMap['Total'].monthsYear.setValue(date.getFullYear(), date.getMonth(), categ.value.toFixed(2));
                     }
         
-                    const chartData = Object.keys(dataMap).map(key => dataMap[key]);                    
+                    const chartData = [];                    
+                    Object.keys(dataMap).forEach(key => {
+                    
+                        dataMap[key].months = dataMap[key].monthsYear.getValues();
+                        chartData.push(dataMap[key]);
+                    });
 
                     const canvas = $('<canvas></canvas>')[0];
                     $cardTotalInYear.find('.body').empty().append(canvas);
@@ -219,8 +289,10 @@
 
             const ctx = canvas.getContext('2d');
 
+            const labels = new MonthsInYear().getMonths().map(month => App.Utils.Datetime.getMonthName(month));
+
             const chartData = {
-                labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+                labels: labels,
                 datasets: data.map((x, i) => {                    
 
                     return {

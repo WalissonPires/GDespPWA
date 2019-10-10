@@ -1,7 +1,7 @@
 'use strict';
 
 var dataCacheName  = 'GDespDataCache';
-var cacheName = 'GDespShellCache-v1.0.124';
+var cacheName = 'GDespShellCache-v1.0.131';
 var filesToCache = [
     './',
     './index.html',
@@ -38,6 +38,7 @@ var filesToCache = [
     './js/core/toast.js',
     './js/core/namespace-utils.js',
     './js/core/layout.js',
+    './js/core/utils/datetime.js',
     './js/services/expenses-api.js',
     './js/services/members-api.js',
     './js/services/gdesp-api-core.js',
