@@ -143,6 +143,8 @@
     Layout.LOADING_BAR_HTML = '<div class="loading-bar"><div class="x-bar"></div></div>';
     Layout.LOADING_BAR_SELECTOR = '.loading-bar';
 
+    Layout.PAGE_BOTTOM_SPACE = '<div class="page-bottom-space"></div>';
+
     Layout.NETWORK_ERROR = '<p class="danger__color p-3">Falha ao carregar dados. Verifique sua conexão com a internet</p>';
 
     App.Layout = Layout;    

@@ -1,13 +1,14 @@
 'use strict';
 
 var dataCacheName  = 'GDespDataCache';
-var cacheName = 'GDespShellCache-v1.0.118';
+var cacheName = 'GDespShellCache-v1.0.122';
 var filesToCache = [
     './',
     './index.html',
     './css/index.css',
     './libs/bootstrap/css/bootstrap-grid.min.css',
     './libs/material-toast/mdtoast.min.css',
+    './libs/chartjs/Chart.min.css',
     './android-chrome-192x192.png',
     './android-chrome-256x256.png',
     './apple-touch-icon.png',
@@ -18,7 +19,10 @@ var filesToCache = [
     './icon-152x152.png',
     './icon-512x512.png',
     './mstile-150x150.png',
-    './safari-pinned-tab.svg',
+    './safari-pinned-tab.svg',    
+    './libs/jquery/js/jquery-3.4.0.min.js',
+    './libs/material-toast/mdtoast.min.js',
+    './libs/chartjs/Chart.min.js',
     './js/components/card-expense-component.js',
     './js/components/list-expense-component.js',
     './js/components/expense-detail-component.js',
@@ -42,9 +46,6 @@ var filesToCache = [
     './js/pages/expenses-page.js',
     './js/pages/dashboard-page.js',
     './js/index.js',
-    './libs/jquery/js/jquery-3.4.0.min.js',
-    './libs/material-toast/mdtoast.min.js',
-
     'https://fonts.googleapis.com/css?family=Montserrat',
     'https://use.fontawesome.com/releases/v5.8.1/css/solid.css',
     'https://use.fontawesome.com/releases/v5.8.1/css/regular.css',

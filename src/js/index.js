@@ -6,6 +6,10 @@ if ('serviceWorker' in navigator) {
 
 window.onload = function(e) {    
 
+    // Global Options:
+    Chart.defaults.global.defaultFontColor = '#444';
+    Chart.defaults.global.defaultFontSize = 16;
+
     App.Layout.instance = new App.Layout();    
 
     $('[data-page="' + App.Pages.DashboardPage.name + '"]').click();

@@ -141,7 +141,8 @@
              
             listComp = new App.Components.ListExpensesCompoent(listOptions);
             
-            $context.empty().append(listComp.getDom());            
+            $context.empty().append(listComp.getDom());
+            $context.append(App.Layout.PAGE_BOTTOM_SPACE);
         }
 
 

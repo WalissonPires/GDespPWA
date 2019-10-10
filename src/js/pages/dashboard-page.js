@@ -7,6 +7,7 @@
 
         let $cardPeople = null;
         let $cardCategories = null;
+        let $cardCategoriesInYear = null;
         let $filter = null;
         let member = null;
         
@@ -41,10 +42,23 @@
                 </div>
             </div>`);
 
+            $cardCategoriesInYear = $(`
+            <div name="dashCardCategoriesInYear">
+                <div class="card p-0 mt-3">
+                    <div class="title">Despesas por categorias/mes</div>
+                    <div class="body">
+                        ${App.Layout.LOADING_HTML}
+                    </div>
+                </div>
+            </div>`);
+
+
             //$context.append(App.Layout.LOADING_BAR_HTML);
             $context.append($filter);
             $context.append($cardPeople);
             $context.append($cardCategories);
+            $context.append($cardCategoriesInYear);
+            $context.append(App.Layout.PAGE_BOTTOM_SPACE);
 
             $(document).on('monthYearChange', handleMonthChange);
 
@@ -71,6 +85,7 @@
             var date = App.Layout.getMonthYear();
             downloadPeopleData(date);
             downloadCategoriesData(date);
+            downloadCategoriesInYearData();
         }
 
         function downloadPeopleData(date) {            
@@ -86,18 +101,7 @@
 
                     $cardPeople.find('.body').empty().append(App.Layout.NETWORK_ERROR);
                 }
-            );
-
-            // promise.then(promises => { 
-                
-            //     promises.forEach(p => {
-
-            //         p.then(data => {
-
-            //             $cardPeople.find('.body').empty().append(createCardList(data));
-            //         });
-            //     });
-            // });            
+            );            
         }
 
         function downloadCategoriesData(date) {            
@@ -115,18 +119,104 @@
 
                     $cardCategories.find('.body').empty().append(App.Layout.NETWORK_ERROR);
                 }
-            );
+            );                                         
+        }
 
-            // promise.then(promises => { 
-                
-            //     promises.forEach(p => {
+        function downloadCategoriesInYearData(date) {            
 
-            //         p.then(data => {
+            var promise = dashApi.getTotalMonthInYearByCategory(
+                member != null ? member.userGuestId : undefined);
+            
 
-            //             $cardCategories.find('.body').empty().append(createCardList(data));
-            //         });
-            //     });
-            // });                                          
+            App.Utils.FetchUtils.treatEachResponse(promise, 
+                data => {
+                    
+                    const categoryMap = {};
+                    for (let i = 0; i < data.length; i++) {
+        
+                        const categ = data[i];
+        
+                        if (categoryMap[categ.name] === undefined) {
+                            categoryMap[categ.name] = {
+                                name: categ.name,
+                                color: categ.color,
+                                months: new Array(12).fill(undefined)
+                            };
+                        }
+        
+                        const date = new Date(categ.date);
+                        categoryMap[categ.name].months[date.getMonth()] = categ.value.toFixed(2);
+                    }
+        
+                    const chartData = Object.keys(categoryMap).map(key => categoryMap[key]);                    
+
+                    const canvas = $('<canvas></canvas>')[0];
+                    $cardCategoriesInYear.find('.body').empty().append(canvas);
+                    
+                    createCategoriesInYearChart(canvas, chartData);
+                },
+                erro => {
+
+                    $cardCategoriesInYear.find('.body').empty().append(App.Layout.NETWORK_ERROR);
+                }
+            );                                         
+        }
+
+        function createCategoriesInYearChart(canvas, data) {
+
+            const ctx = canvas.getContext('2d');
+
+            const chartData = {
+                labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+                datasets: data.map((x, i) => {                    
+
+                    return {
+                        label: x.name,
+                        fill: false,
+                        lineTension: 0.1,
+                        backgroundColor: x.color,
+                        borderColor: x.color, 
+                        borderCapStyle: 'square',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "black",
+                        pointBackgroundColor: "white",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 8,
+                        pointHoverBackgroundColor: x.color,
+                        pointHoverBorderColor: "brown",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHitRadius: 10,
+                        // notice the gap in the data and the spanGaps: true
+                        data: x.months,
+                        spanGaps: true
+                    };
+                })
+            };
+
+            // Notice the scaleLabel at the same level as Ticks
+            var options = {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Valor (R$)',
+                            fontSize: 20
+                        }
+                    }]
+                }
+            };
+            
+            const myChart = new Chart(ctx, {
+                type: 'line',
+                data: chartData,
+                options: options
+            });
         }
 
         function createCardList(data) {
