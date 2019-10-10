@@ -8,6 +8,7 @@
         let $cardPeople = null;
         let $cardCategories = null;
         let $cardCategoriesInYear = null;
+        let $cardTotalInYear = null;
         let $filter = null;
         let member = null;
         
@@ -52,12 +53,23 @@
                 </div>
             </div>`);
 
+            $cardTotalInYear = $(`
+            <div name="dashCardTotalInYear">
+                <div class="card p-0 mt-3">
+                    <div class="title">Total Despesas/mes</div>
+                    <div class="body">
+                        ${App.Layout.LOADING_HTML}
+                    </div>
+                </div>
+            </div>`);
+
 
             //$context.append(App.Layout.LOADING_BAR_HTML);
             $context.append($filter);
             $context.append($cardPeople);
             $context.append($cardCategories);
             $context.append($cardCategoriesInYear);
+            $context.append($cardTotalInYear);
             $context.append(App.Layout.PAGE_BOTTOM_SPACE);
 
             $(document).on('monthYearChange', handleMonthChange);
@@ -86,6 +98,7 @@
             downloadPeopleData(date);
             downloadCategoriesData(date);
             downloadCategoriesInYearData();
+            downloadTotalInYearData();
         }
 
         function downloadPeopleData(date) {            
@@ -153,7 +166,7 @@
                     const canvas = $('<canvas></canvas>')[0];
                     $cardCategoriesInYear.find('.body').empty().append(canvas);
                     
-                    createCategoriesInYearChart(canvas, chartData);
+                    createExpensesInYearChart(canvas, chartData);
                 },
                 erro => {
 
@@ -162,7 +175,47 @@
             );                                         
         }
 
-        function createCategoriesInYearChart(canvas, data) {
+        function downloadTotalInYearData(date) {            
+
+            var promise = dashApi.getTotalMonthInYear(
+                member != null ? member.userGuestId : undefined);
+            
+
+            App.Utils.FetchUtils.treatEachResponse(promise, 
+                data => {                                        
+
+                    const dataMap = {};
+                    for (let i = 0; i < data.length; i++) {
+        
+                        const categ = data[i];
+        
+                        if (dataMap['Total'] === undefined) {
+                            dataMap['Total'] = {
+                                name: categ.name,
+                                color: 'red',
+                                months: new Array(12).fill(undefined)
+                            };
+                        }
+        
+                        const date = new Date(categ.date);
+                        dataMap['Total'].months[date.getMonth()] = categ.value.toFixed(2);
+                    }
+        
+                    const chartData = Object.keys(dataMap).map(key => dataMap[key]);                    
+
+                    const canvas = $('<canvas></canvas>')[0];
+                    $cardTotalInYear.find('.body').empty().append(canvas);
+                    
+                    createExpensesInYearChart(canvas, chartData);
+                },
+                erro => {
+
+                    $cardTotalInYear.find('.body').empty().append(App.Layout.NETWORK_ERROR);
+                }
+            );                                         
+        }
+
+        function createExpensesInYearChart(canvas, data) {
 
             const ctx = canvas.getContext('2d');
 
