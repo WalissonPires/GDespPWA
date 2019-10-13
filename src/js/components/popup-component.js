@@ -48,22 +48,26 @@
             $popupOverlay.click(handleOverlayClick); 
             $popupOverlay.append($popup);
             $popupOverlay.appendTo(document.body);    
+            $popup.css('display', 'block'); //exibir aqui para obter as dimensões corretas
 
+            var popupOffsetWidth = $popup[0].offsetWidth;
+            var popupOffsetHeight = $toggle[0].offsetHeight;
             var posX = e.pageX;
-            var posY = e.pageY + $toggle[0].offsetHeight ;            
+            var posY = e.pageY + popupOffsetHeight; 
+            var windowWidth = $(window).width();           
             
             if (isNaN(parseFloat(posX)) || isNaN(parseFloat(posY))) {
              
-                posX = $(window).width() / 2 - $popup.width() / 2;
+                posX = windowWidth / 2 - $popup.width() / 2;
                 posY = 100;
             }
 
-            if (posX + $popup[0].offsetWidth > $(window).width())
-                posX = $(window).width() - $popup[0].offsetWidth - 5/*space free*/;	
+            if (posX + popupOffsetWidth > windowWidth)
+                posX = windowWidth - popupOffsetWidth - 5/*space free*/;	
 
             $popup.css('top', posY);
             $popup.css('left', posX);
-            $popup.css('display', 'block');
+            //$popup.css('display', 'block');
 
             if (typeof options.onReady === 'function')
                 options.onReady.call(_this, $popup, $toggle);
