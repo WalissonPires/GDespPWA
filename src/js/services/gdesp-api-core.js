@@ -9,5 +9,12 @@
                 : 'https://wprm.dlinkddns.com/GDespApi/API'
     };
 
+    if (window.location.hash && window.location.hash.indexOf('#baseUrl-') >= 0) {
+
+        var baseUrl = window.location.hash.split('-')[1];
+        GDespApi.BASE_URL = baseUrl;
+    }
+
+
     App.Utils.Namespace.CreateIfNotExists('App.Services').GDespApi = GDespApi;
 })();

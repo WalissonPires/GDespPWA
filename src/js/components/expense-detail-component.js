@@ -11,75 +11,45 @@
     var ExpenseDetailComponent = function (options) {
 
         options = options || {};
-        const self = this;        
+        const self = this;      
+        let modalEl = null;
+        
         const modal = new App.Components.ModalComponent({
             dataTemplate: '#modal-expense-template',
             onDone: modalDone
         });
 
-        function modalDone(modalEl) {
+        function modalDone(_modalEl) {
 
-            let calledMembers = false;
-            let calledCategories = false;
+            modalEl = _modalEl;               
 
-            new App.Components.PopupMenu({
-                target: $(modalEl).find('.popup-categories .popup-toggle'),
-                onPrepare: ($popup) => $popup.addClass('popup-list'),
-                onReady: function bindedThis($popup) {
+            initPopupCategories();
+            loadMembers();
+        }
+    
+        function initPopupCategories() {
 
-                    const popupComp = this;
+            $(modalEl).find('.popup-categories .popup-toggle').click(e => {
 
-                    $popup.find('.popup-item').click((e) => {
+                new App.Components.PopupCategoriesComponent({
+                    target: e.currentTarget,
+                    onSelected: (category) => {
 
-                        const $item = $(e.currentTarget);
-
-                        const category = {
-                            id: $item.find('[data-id]').attr('data-id'),
-                            name: $item.find('[name="category.name"]').text(),
-                            color: $item.find('[data-color]').attr('data-color'),
-                            iconCircle: $item.find('.icon-circle').clone().removeClass('mr-3')
-                        }
-
-                        $popupContent = $(modalEl).find('.popup-categories');
-                        
+                        const $popupContent = $(modalEl).find('.popup-categories');
+                            
                         $popupContent.find('[name="category.id"]').val(category.id);
                         $popupContent.find('[name="category.name"]').val(category.name);
                         $popupContent.find('[name="category.color"]').val(category.color);
                         $popupContent.find('.popup-toggle').html(category.iconCircle);
+                    }
+                });
 
-                        popupComp.hide();
-                    });
-                }                
-            });
+            });   
+        }
 
-            const $popupTemplate = $('#modal-expense-template .popup-categories .popup-menu');
-            
-            if ($popupTemplate.children().length === 0) {
+        function loadMembers() {
 
-                const categoriesPromises = new App.Services.CategoriesApi().getAll();
-                App.Utils.FetchUtils.treatEachResponse(categoriesPromises, 
-                    function bindedThis(categories) {
-
-                        // if (calledCategories) 
-                        //     return;
-
-                        // calledCategories = true;
-
-                        const contents = [ $popupTemplate ];
-
-                        const $popupModel = $(modalEl).find('.popup-categories .popup-menu');
-                        contents.push($popupModel);
-
-                        for(const cat of categories) {
-
-                            contents.forEach(x => x.append(`<span class="popup-item"><span class="icon-circle mr-3" style="font-size: .9em; background-color: ${cat.color}">${cat.name[0]}</span><span name="category.name" data-id="${cat.id}" data-color="${cat.color}">${cat.name}</span></span>`));
-                        }                                            
-                    },
-                    (error) => {
-
-                        App.Utils.Toast.error('Falha ao baixar categorias. ' + error.message);
-                    });
-            }
+            let calledMembers = false;
 
             new App.Services.MembersApi().getAll()
                 .then(promises => {
@@ -107,7 +77,6 @@
                     modal.hide();
                     App.Utils.Toast.error('Falha ao baixar dados');
                 });
-
         }
 
         function loadData(modalEl, membersList) {
