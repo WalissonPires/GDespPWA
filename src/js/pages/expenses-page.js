@@ -141,10 +141,32 @@
              
             listComp = new App.Components.ListExpensesCompoent(listOptions);
             
-            $context.empty().append(listComp.getDom());
+            $context.empty().append(listComp.getDom());            
             $context.append(App.Layout.PAGE_BOTTOM_SPACE);
+            $context.append('<button name="addExpense" class="btn-main-add" title="Adicionar despesa"><i class="fa fa-plus"></i></button>');
+
+            $context.find('[name="addExpense"]').click(handleAddExpense);
         }
 
+        function showExpenseDetail(exp, domItem) {
+
+            new App.Components.ExpenseDetailComponent({ 
+                expense: exp,
+                onSave: (expense, isNewExpense) => {
+
+                    if (isNewExpense)                               
+                        listComp.addItem(expense);
+                    else
+                        listComp.updateItem(expense);
+                },
+                onDelete: () => domItem.remove()
+            });
+        }
+
+        function handleAddExpense(e) {
+
+            showExpenseDetail();
+        }   
 
         function handleItemAddOrUpdatedListComp(domItem, expense) {
         
@@ -157,14 +179,7 @@
                     if (isCategoryIcon)
                         return;
 
-                    new App.Components.ExpenseDetailComponent({ 
-                        expense: exp,
-                        onSave: (expense) => {
-
-                            listComp.updateItem(expense);
-                        },
-                        onDelete: () => domItem.remove()
-                    });
+                    showExpenseDetail(exp, domItem);                    
                 };
 
             })(expense));

@@ -13,6 +13,7 @@
         options = options || {};
         const self = this;      
         let modalEl = null;
+        let isNewExpense;
         
         const modal = new App.Components.ModalComponent({
             dataTemplate: '#modal-expense-template',
@@ -21,7 +22,13 @@
 
         function modalDone(_modalEl) {
 
-            modalEl = _modalEl;               
+            modalEl = _modalEl;       
+            
+            isNewExpense = options.expense === undefined;
+
+            if (isNewExpense) {
+                $(modalEl).find('.card-members').css('display', 'none');
+            }
 
             initPopupCategories();
             loadMembers();
@@ -62,7 +69,10 @@
                                 return;
 
                             calledMembers = true;
-                            loadData(modalEl, membersList);
+                            
+                            options.expense && loadDataExpense(modalEl);
+                            loadDataMembers(modalEl, membersList, options.expense && options.expense.members);
+                            
                             bindEvents(modalEl);
 
                             const $m = $(modalEl);
@@ -79,11 +89,11 @@
                 });
         }
 
-        function loadData(modalEl, membersList) {
+        function loadDataExpense(modalEl) {
 
             const $m = $(modalEl);
             const exp = options.expense;
-
+            
             $m.find('[name="id"]').val(exp.id);
             if (exp.category) {
                 $m.find('[name="category.id"]').val(exp.category.id);
@@ -97,41 +107,47 @@
             $m.find('[name="price"]').val(exp.price);
             $m.find('[name="dueDate"]').val(exp.dueDate.split('T')[0]);
             exp.totalInstallment > 1 && $m.find('.portion')
-                .html(exp.currentInstallment + '/' + exp.totalInstallment);
+                .html(exp.currentInstallment + '/' + exp.totalInstallment);                     
+        }
 
-            const members = exp.members.slice();
-            membersList.forEach(x => {
+        function loadDataMembers(modalEl, membersList, expenseMembers) {
 
-                if (members.find(y => (y.guestId !== null && y.guestId === x.guestId)
-                    || (y.userId !== null && y.userId === x.userId)))
-                    return;
+             const $m = $(modalEl);
 
-                members.push({
-                    id: x.id,
-                    name: x.name,
-                    price: 0,
-                    userId: x.userId,
-                    guestId: x.guestId,
-                });
-            });
-            members.sort((a, b) => a.name === b.name ? 0 : a.name < b.name ? -1 : 1);
-
-            const $memberTemplate = $('#expense-member-template');
-            const $membersContent = $m.find('.card-members > .body');
-
-            members.forEach((x) => {
-
-                const $memberEl = $memberTemplate.clone().attr('id', null).attr('style', null);
-
-                $memberEl.find('[name="id"]').val(x.id);
-                $memberEl.find('[name="userId"]').val(x.userId);
-                $memberEl.find('[name="guestId"]').val(x.guestId);
-                $memberEl.find('.selecao')[0].checked = x.price > 0;
-                $memberEl.find('.name').html(x.name);
-                $memberEl.find('.value').html('R$ ' + x.price);
-
-                $membersContent.append($memberEl);
-            });
+             // load members data
+             const members = expenseMembers || [];
+             membersList.forEach(x => {
+ 
+                 if (members.find(y => (y.guestId !== null && y.guestId === x.guestId)
+                     || (y.userId !== null && y.userId === x.userId)))
+                     return;
+ 
+                 members.push({
+                     id: x.id,
+                     name: x.name,
+                     price: 0,
+                     userId: x.userId,
+                     guestId: x.guestId,
+                 });
+             });
+             members.sort((a, b) => a.name === b.name ? 0 : a.name < b.name ? -1 : 1);
+ 
+             const $memberTemplate = $('#expense-member-template');
+             const $membersContent = $m.find('.card-members > .body');
+ 
+             members.forEach((x) => {
+ 
+                 const $memberEl = $memberTemplate.clone().attr('id', null).attr('style', null);
+ 
+                 $memberEl.find('[name="id"]').val(x.id);
+                 $memberEl.find('[name="userId"]').val(x.userId);
+                 $memberEl.find('[name="guestId"]').val(x.guestId);
+                 $memberEl.find('.selecao')[0].checked = x.price > 0;
+                 $memberEl.find('.name').html(x.name);
+                 $memberEl.find('.value').html('R$ ' + x.price);
+ 
+                 $membersContent.append($memberEl);
+             });
         }
 
         function bindEvents(modalEl) {
@@ -160,6 +176,8 @@
                 originId: $cardExp.find('[name="originId"]').val(),
                 description: $cardExp.find('[name="description"]').val(),
                 price: parseFloat($cardExp.find('[name="price"]').val().replace(',', '.')),
+                dueDate: $cardExp.find('[name="dueDate"]').val(),
+                totalInstallments: undefined,
                 members: []
             };
 
@@ -180,6 +198,33 @@
             });
 
             return expense;
+        }
+
+        function validateExpense(expense) {
+
+            let isValid = true;
+
+            if (!expense.categoryId) {
+                App.Utils.Toast.warn('Selecione um categoria');
+                return false;
+            }
+
+            if (!expense.description) {
+                App.Utils.Toast.warn('Informe a descrição');
+                return false;
+            }
+
+            if (!expense.price) {
+                App.Utils.Toast.warn('Informe o valor');
+                return false;
+            }
+
+            if (!expense.dueDate) {
+                App.Utils.Toast.warn('Informe a data de vencimento');
+                return false;
+            }
+
+            return isValid;
         }
 
         function handleMemberClick(e) {
@@ -219,15 +264,29 @@
             const expense = getExpenseOfDom();
             const expApi = new App.Services.ExpensesApi();
             const $btnSave = $m.find('[name="save"]');
-
-            $btnSave.attr('disabled', 'disabled');
-            App.Utils.Toast.info('Salvando dados...');
+            
             try {
 
-                const promises = [
-                    expApi.updatePartial(expense),
-                    expApi.updateMembers(expense.id, expense.members)
-                ];
+                let promises;
+
+                if (isNewExpense) {
+
+                    if (!validateExpense(expense))
+                        return;
+
+                    promises = [
+                        expApi.create(expense)
+                    ];
+                }
+                else {
+                    promises = [
+                        expApi.updatePartial(expense),
+                        expApi.updateMembers(expense.id, expense.members)
+                    ];
+                }
+
+                $btnSave.attr('disabled', 'disabled');
+                App.Utils.Toast.info('Salvando dados...');
 
                 Promise.all(promises)
                     .then((data) => {
@@ -238,7 +297,7 @@
                         if (typeof options.onSave === 'function') {
                             const exp = Object.assign({}, options.expense, getExpenseOfDom());
 
-                            options.onSave.call(self, exp);
+                            options.onSave.call(self, exp, isNewExpense);
                             modal.hide();
                         }
                     })

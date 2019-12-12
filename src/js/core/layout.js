@@ -14,7 +14,7 @@
         function bindEvents() {
 
             $('.btn-menu').click(() => $('.main').toggleClass('nav-show'));
-            $('[name="addExpense"]').click(handleAddExpense);
+            //$('[name="addExpense"]').click(handleAddExpense);
             $('.bkgd-overlay,[data-page]').click(() =>  $('.main').removeClass('nav-show'));
             $('[data-page]').click(handleMenuPage);                       
         }
@@ -36,10 +36,15 @@
                 App.Utils.Pages.activePage(pageName);
         }
 
-        function handleAddExpense(e) {
+        // function handleAddExpense(e) {
 
-            alert('Adicionar');
-        }        
+        //     new App.Components.ExpenseDetailComponent({
+        //         onSave: (expense, isNewExpense) => {
+
+        //             alert('Salva com sucesso');
+        //         }
+        //     });
+        // }        
 
         init();
     };    

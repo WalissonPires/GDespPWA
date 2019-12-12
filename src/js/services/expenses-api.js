@@ -39,6 +39,30 @@
                 body: JSON.stringify(expense)
             }));
         };
+
+        this.create = function(expense) {
+
+            expense = {
+                descricao: expense.description,
+                vencimento: expense.dueDate,
+                valor: expense.price,
+                origemID: expense.originId,
+                totalParcelas: 1,
+                parcelaAtual: 1,                
+                categoriaID: expense.categoryId,
+                isPaga: false,
+                isFixa: false
+            };
+
+            return FetchUtils.fetchJson(new Request(BaseUrl, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                  },
+                body: JSON.stringify(expense)
+            }));
+        }
         
         this.updatePartial = function(expense) {
 

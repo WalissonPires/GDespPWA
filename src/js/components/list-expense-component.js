@@ -22,7 +22,23 @@
 
             render();
         }
-        
+
+        this.addItem = function(expense) {
+            
+            const cardEl = new App.Components.CardExpenseComponent({expense});
+            const newItemEl = $('<li class="list-item"></li>');
+            newItemEl.append(cardEl);
+
+            const $group = $root.find(`[data-group-id="${expense.originId}"]`);
+            $(newItemEl).insertAfter($group);
+
+            const $groupTotal = $group.find('.total');
+            let total = parseFloat($groupTotal.text().replace('R$ ', '').replace(',', '.'));
+            total += expense.price;
+
+            total = 'R$ ' + total.toFixed(2).replace('.', ',');
+            $groupTotal.html(total);
+        };
 
         this.updateItem = function(expense) {
 
