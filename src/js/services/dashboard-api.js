@@ -70,6 +70,42 @@
             });          
         };
 
+        this.getTotalMonthByOrigin = function(month, year, userGuestId) {
+
+            const date = new Date(year, month - 1, 1);
+            let url = BaseUrl + '/origens/' + encodeURIComponent(date.toISOString());
+
+            if (userGuestId !== undefined) {
+
+                const { userId, guestId } = App.Entities.MemberUtils.parseUserGuestId(userGuestId);
+
+                url += '?devedorId=' + (userId != null ? userId : guestId);
+                url += '&isUs=' + (userId != null);
+            }
+
+            const promise = FetchUtils.fetchJsonWithCache(new Request(url, {
+                method: 'GET'
+            }));
+            
+            return promise.then(promises => {
+
+                var promises = promises.map(x => {
+
+                    return x.then(data => {
+    
+                        return data.map(x => ({
+                            date: x.data,
+                            name: x.nome,
+                            photoUrl: x.urlFotoPerfil,
+                            value: x.valor
+                        }));
+                    });
+                });
+
+                return promises;
+            });          
+        };
+
         this.getTotalMonthInYearByCategory = function(userGuestId) {
            
             let url = BaseUrl + '/categorias/ano';

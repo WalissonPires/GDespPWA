@@ -65,6 +65,7 @@
         let $cardCategories = null;
         let $cardCategoriesInYear = null;
         let $cardTotalInYear = null;
+        let $cardOrigins = null;
         let $filter = null;
         let member = null;
         
@@ -81,8 +82,8 @@
 
             $cardPeople = $(`
             <div name="dashCardPeople">
-                <div class="card p-0 mb-3">
-                    <div class="title">Resumo por pessoa</div>
+                <div class="card p-0 mt-3">
+                    <div class="title">Resumo do mês por pessoa</div>
                     <div class="body">
                         ${App.Layout.LOADING_HTML}
                     </div>
@@ -92,7 +93,7 @@
             $cardCategories = $(`
             <div name="dashCardCategories">
                 <div class="card p-0 mt-3">
-                    <div class="title">Resumo por categoria</div>
+                    <div class="title">Resumo do mês por categoria</div>
                     <div class="body">
                         ${App.Layout.LOADING_HTML}
                     </div>
@@ -102,7 +103,7 @@
             $cardCategoriesInYear = $(`
             <div name="dashCardCategoriesInYear">
                 <div class="card p-0 mt-3">
-                    <div class="title">Despesas por categorias/mes</div>
+                    <div class="title">Despesas ano por categorias/mes</div>
                     <div class="body">
                         ${App.Layout.LOADING_HTML}
                     </div>
@@ -119,11 +120,21 @@
                 </div>
             </div>`);
 
+            $cardOrigins = $(`
+            <div name="dashCardOrigins">
+                <div class="card p-0 mt-3">
+                    <div class="title">Resumo do mês por origens</div>
+                    <div class="body">
+                        ${App.Layout.LOADING_HTML}
+                    </div>
+                </div>
+            </div>`);
 
             //$context.append(App.Layout.LOADING_BAR_HTML);
-            $context.append($filter);
+            $context.append($filter);            
             $context.append($cardPeople);
             $context.append($cardCategories);
+            $context.append($cardOrigins);
             $context.append($cardCategoriesInYear);
             $context.append($cardTotalInYear);
             $context.append(App.Layout.PAGE_BOTTOM_SPACE);
@@ -153,6 +164,7 @@
             var date = App.Layout.getMonthYear();
             downloadPeopleData(date);
             downloadCategoriesData(date);
+            downloadOriginsData(date);
             downloadCategoriesInYearData();
             downloadTotalInYearData();
         }
@@ -191,6 +203,24 @@
             );                                         
         }
 
+        function downloadOriginsData(date) {            
+
+            var promise = dashApi.getTotalMonthByOrigin(date.month, date.year,
+                member != null ? member.userGuestId : undefined);
+            
+
+            App.Utils.FetchUtils.treatEachResponse(promise, 
+                data => {
+
+                    $cardOrigins.find('.body').empty().append(createCardList(data));
+                },
+                erro => {
+
+                    $cardOrigins.find('.body').empty().append(App.Layout.NETWORK_ERROR);
+                }
+            );                                         
+        }
+
         function downloadCategoriesInYearData(date) {            
 
             var promise = dashApi.getTotalMonthInYearByCategory(
@@ -200,6 +230,13 @@
             App.Utils.FetchUtils.treatEachResponse(promise, 
                 data => {
                     
+                    if (data.length === 0) {
+
+                        // criar mensagem informando que não há dados
+                        $cardCategoriesInYear.find('.body').empty().append(createCardList(data));
+                        return;
+                    }
+
                     const categoryMap = {};
                     for (let i = 0; i < data.length; i++) {
         
@@ -247,6 +284,13 @@
             App.Utils.FetchUtils.treatEachResponse(promise, 
                 data => {                                        
 
+                    if (data.length === 0) {
+
+                        // criar mensagem informando que não há dados
+                        $cardTotalInYear.find('.body').empty().append(createCardList(data));
+                        return;
+                    }
+
                     const dataMap = {};
                     for (let i = 0; i < data.length; i++) {
         
@@ -254,7 +298,7 @@
                                 
                         if (dataMap['Total'] === undefined) {
                             dataMap['Total'] = {
-                                name: categ.name,
+                                name: 'Despesas',
                                 color: 'red',
                                 monthsYear: new MonthsInYear(),                               
                             };
