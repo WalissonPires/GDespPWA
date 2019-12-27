@@ -1,0 +1,18 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "sourceMap": true,
+        "outDir": "js/build",
+        "noImplicitAny": false,
+        "jsx": "react",
+        "jsxFactory": "React.createElement",
+    },
+    "include": [
+        "scripts/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
