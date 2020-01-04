@@ -1,7 +1,7 @@
 'use strict';
 
 var dataCacheName  = 'GDespDataCache';
-var cacheName = 'GDespShellCache-v1.0.172';
+var cacheName = 'GDespShellCache-v1.1.12';
 var filesToCache = [
     './',
     './index.html',
@@ -19,35 +19,45 @@ var filesToCache = [
     './icon-152x152.png',
     './icon-512x512.png',
     './mstile-150x150.png',
-    './safari-pinned-tab.svg',    
+    './safari-pinned-tab.svg', 
+
     './libs/jquery/js/jquery-3.4.0.min.js',
     './libs/material-toast/mdtoast.min.js',
     './libs/chartjs/Chart.min.js',
-    './js/components/card-expense-component.js',
-    './js/components/list-expense-component.js',
-    './js/components/expense-detail-component.js',
-    './js/components/modal-component.js',
-    './js/components/filter-component.js',
-    './js/components/popup-component.js',
-    './js/components/popup-categories-component.js',
-    './js/components/month-year-component.js',
-    './js/core/entities/expense-entity.js',
-    './js/core/entities/member-entity.js',
-    './js/core/entities/category-entity.js',
-    './js/core/pages.js',
+
+    './js/jsx/jsx-factory.js',
+    './js/jsx/jsx-utils.js',
+
+    './js/core/datetime.js',
+    './js/core/entities.js',    
     './js/core/fetch-utils.js',
-    './js/core/toast.js',
-    './js/core/namespace-utils.js',
     './js/core/layout.js',
-    './js/core/utils/datetime.js',
-    './js/services/expenses-api.js',
-    './js/services/members-api.js',
-    './js/services/gdesp-api-core.js',
+    './js/core/page.js',
+    './js/core/toast.js',
+
+    './js/services/entities/entities.js',
     './js/services/categories-api.js',
     './js/services/dashboard-api.js',
-    './js/pages/expenses-page.js',
+    './js/services/expenses-api.js',
+    './js/services/gdesp-api-core.js',    
+    './js/services/members-api.js',
+
+    './js/components/card-expense-component.js',
+    './js/components/component-utils.js',    
+    './js/components/expense-detail-component.js',
+    './js/components/filter-component.js',
+    './js/components/list-expense-component.js',
+    './js/components/modal-component.js',
+    './js/components/month-year-component.js',    
+    './js/components/popup-categories-component.js',
+    './js/components/popup-component.js',
+      
+
     './js/pages/dashboard-page.js',
+    './js/pages/expenses-page.js',
+    './js/pages/page-utils.js',
     './js/index.js',
+
     'https://fonts.googleapis.com/css?family=Montserrat',
     'https://use.fontawesome.com/releases/v5.8.1/css/solid.css',
     'https://use.fontawesome.com/releases/v5.8.1/css/regular.css',

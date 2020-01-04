@@ -1,13 +1,17 @@
 {
     "compileOnSave": true,
     "compilerOptions": {
-        "module": "commonjs",
-        "target": "es5",
+        "module": "es6",
+        "target": "es6",
         "sourceMap": true,
-        "outDir": "js/build",
-        "noImplicitAny": false,
+        "outDir": "js",
+        "noImplicitAny": true,
         "jsx": "react",
         "jsxFactory": "React.createElement",
+        "typeRoots": [
+            "./node_modules/@types",
+            "./@types"
+         ],
     },
     "include": [
         "scripts/**/*"
