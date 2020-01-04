@@ -1,0 +1,22 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "module": "es6",
+        "target": "es6",
+        "sourceMap": true,
+        "outDir": "js",
+        "noImplicitAny": true,
+        "jsx": "react",
+        "jsxFactory": "React.createElement",
+        "typeRoots": [
+            "./node_modules/@types",
+            "./@types"
+         ],
+    },
+    "include": [
+        "scripts/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

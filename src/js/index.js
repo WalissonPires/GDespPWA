@@ -1,16 +1,13 @@
+import { DashboardPage } from "./pages/dashboard-page.js";
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker
-            .register('./service-worker.js')
-            .then(function() { console.log('Service Worker Registered'); });
+        .register('./service-worker.js')
+        .then(function () { console.log('Service Worker Registered'); });
 }
-
-window.onload = function(e) {    
-
+window.onload = function (e) {
     // Global Options:
     Chart.defaults.global.defaultFontColor = '#444';
     Chart.defaults.global.defaultFontSize = 16;
-
-    App.Layout.instance = new App.Layout();    
-
-    $('[data-page="' + App.Pages.DashboardPage.name + '"]').click();
+    $('[data-page="' + DashboardPage.name + '"]').click();
 };
+//# sourceMappingURL=index.js.map

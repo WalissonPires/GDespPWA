@@ -1,8 +1,7 @@
-(function(){
 
-    var Datetime = function() {};
+export class Datetime {
 
-    Datetime.getMonthName = function (month) {
+    static getMonthName (month: number) {
 
         switch(month) {
             case 1: return 'JAN';
@@ -18,9 +17,9 @@
             case 11: return 'NOV';
             case 12: return 'DEZ';
         }
-    };
+    }
 
-    Datetime.ptBrDateToLocaleISO = function (dataStr) {
+    static ptBrDateToLocaleISO (dataStr: string) {
 
         const regexDatePtBr = /(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s(\d{2}):(\d{2}):(\d{2}))?/;
         const match = regexDatePtBr.exec(dataStr);
@@ -43,7 +42,5 @@
         }
         
         return dateIsoStr;
-    };
-
-    App.Utils.Namespace.CreateIfNotExists('App.Utils').Datetime = Datetime;
-})();
+    }
+}
