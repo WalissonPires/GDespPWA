@@ -1,5 +1,7 @@
 export class Categoria {
 }
+export class Origem {
+}
 export class Membro {
 }
 export class Despesa {

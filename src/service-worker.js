@@ -1,7 +1,7 @@
 'use strict';
 
 var dataCacheName  = 'GDespDataCache';
-var cacheName = 'GDespShellCache-v1.1.12';
+var cacheName = 'GDespShellCache-v1.1.22';
 var filesToCache = [
     './',
     './index.html',
@@ -41,6 +41,7 @@ var filesToCache = [
     './js/services/expenses-api.js',
     './js/services/gdesp-api-core.js',    
     './js/services/members-api.js',
+    './js/services/origins-api.js',
 
     './js/components/card-expense-component.js',
     './js/components/component-utils.js',    

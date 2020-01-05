@@ -3,6 +3,7 @@ import { ModalComponent } from "./modal-component.js";
 import { PopupCategoriesComponent } from "./popup-categories-component.js";
 import { MembersApi } from "../services/members-api.js";
 import { ExpensesApi } from "../services/expenses-api.js";
+import { OriginsApi } from "../services/origins-api.js";
 export class ExpenseDetailComponentOptions {
 }
 export class ExpenseDetailComponent {
@@ -14,6 +15,9 @@ export class ExpenseDetailComponent {
             onDone: this.modalDone.bind(this)
         });
     }
+    getOptions() {
+        return this.options;
+    }
     modalDone(_modalEl) {
         this.modalEl = _modalEl;
         this.isNewExpense = this.options.expense === undefined;
@@ -21,7 +25,7 @@ export class ExpenseDetailComponent {
             $(this.modalEl).find('.card-members').css('display', 'none');
         }
         this.initPopupCategories();
-        this.loadMembers();
+        this.loadData();
     }
     initPopupCategories() {
         $(this.modalEl).find('.popup-categories .popup-toggle').click(e => {
@@ -37,29 +41,74 @@ export class ExpenseDetailComponent {
             });
         });
     }
-    loadMembers() {
-        let calledMembers = false;
-        new MembersApi().getAll()
-            .then(promises => {
-            promises.forEach(x => {
-                x.then(membersList => {
-                    if (calledMembers)
-                        return;
-                    calledMembers = true;
-                    this.options.expense && this.loadDataExpense(this.modalEl);
-                    this.loadDataMembers(this.modalEl, membersList, this.options.expense && this.options.expense.members);
-                    this.bindEvents(this.modalEl);
-                    const $m = $(this.modalEl);
-                    $m.find('.wrapper-loader').remove();
-                    $m.find('.wrapper-body').attr('style', null);
-                    $m.find('[name="save"]').attr('disabled', null);
-                });
-            });
+    loadData() {
+        const promises = [
+            this.loadOrigins(),
+            this.loadMembers()
+        ];
+        Promise.all(promises)
+            .then(() => {
+            this.options.expense && this.loadDataExpense(this.modalEl);
+            //this.loadDataMembers(this.modalEl, membersList, this.options.expense && this.options.expense.members);
+            this.bindEvents(this.modalEl);
+            const $m = $(this.modalEl);
+            $m.find('.wrapper-loader').remove();
+            $m.find('.wrapper-body').attr('style', null);
+            $m.find('[name="save"]').attr('disabled', null);
         })
-            .catch(() => {
+            .catch(error => {
+            console.log(error);
             this.modal.hide();
             Toast.error('Falha ao baixar dados');
         });
+    }
+    loadOrigins() {
+        let called = false;
+        const promiseResult = new Promise((rs, rj) => {
+            new OriginsApi().getAll()
+                .then(promises => {
+                promises.forEach(p => {
+                    p.then(origins => {
+                        if (called)
+                            return;
+                        called = true;
+                        const $m = $(this.modalEl);
+                        const $sel = $m.find('select[name="originId"]');
+                        origins.forEach(o => {
+                            $sel.append(new Option(o.name, o.id.toString(), false, false));
+                        });
+                        rs();
+                    })
+                        .catch(error => {
+                        if (!called)
+                            rj(error);
+                    });
+                });
+            });
+        });
+        return promiseResult;
+    }
+    loadMembers() {
+        let calledMembers = false;
+        const promiseResult = new Promise((rs, rj) => {
+            new MembersApi().getAll()
+                .then(promises => {
+                promises.forEach(x => {
+                    x.then(membersList => {
+                        if (calledMembers)
+                            return;
+                        calledMembers = true;
+                        this.loadDataMembers(this.modalEl, membersList, this.options.expense && this.options.expense.members);
+                        rs();
+                    });
+                });
+            })
+                .catch(error => {
+                if (!calledMembers)
+                    rj(error);
+            });
+        });
+        return promiseResult;
     }
     loadDataExpense(modalEl) {
         const $m = $(modalEl);
@@ -122,13 +171,17 @@ export class ExpenseDetailComponent {
         const $cardExp = $m.find('.card-expense');
         const viewExpense = {
             id: $cardExp.find('[name="id"]').val(),
-            categoryId: $cardExp.find('[name="category.id"]').val(),
+            categoryId: parseInt($cardExp.find('[name="category.id"]').val()),
             category: {
-                id: $cardExp.find('[name="category.id"]').val(),
+                id: parseInt($cardExp.find('[name="category.id"]').val()),
                 name: $cardExp.find('[name="category.name"]').val(),
                 color: $cardExp.find('[name="category.color"]').val()
             },
-            originId: $cardExp.find('[name="originId"]').val(),
+            originId: parseInt($cardExp.find('[name="originId"]').val()),
+            origin: {
+                id: parseInt($cardExp.find('[name="originId"]').val()),
+                name: $cardExp.find('[name="originId"] :selected').text()
+            },
             description: $cardExp.find('[name="description"]').val(),
             price: parseFloat($cardExp.find('[name="price"]').val().replace(',', '.')),
             dueDate: $cardExp.find('[name="dueDate"]').val(),

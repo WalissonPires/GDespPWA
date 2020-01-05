@@ -156,8 +156,7 @@
                 <div class="card card-expense">
                     <p class="title-s">Despesa</p>            
                     <div class="body">
-                        <input name="id" type="hidden" >
-                        <input name="originId" type="hidden" value="1" >
+                        <input name="id" type="hidden" >                        
                         <div class="row mb-4">
                             <div class="col-md-12">
                                 <div class="input-wrapper">
@@ -191,6 +190,11 @@
                                     <div class="append-l"><i class="fas fa-calendar-alt" title="Vencimento" style="color: #f96867;"></i></div>
                                     <input name="dueDate" type="date" placeholder="Vencimento">
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <select name="originId"></select>
                             </div>
                         </div>
                     </div>
@@ -235,6 +239,7 @@
     <script src="js/services/expenses-api.js" type="module"></script>
     <script src="js/services/gdesp-api-core.js" type="module"></script>    
     <script src="js/services/members-api.js" type="module"></script>
+    <script src="js/services/origins-api.js" type="module"></script>
     
     <script src="js/components/card-expense-component.js" type="module"></script>
     <script src="js/components/component-utils.js" type="module"></script>    

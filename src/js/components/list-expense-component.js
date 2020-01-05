@@ -12,7 +12,16 @@ export class ListExpensesCompoent {
         const cardEl = new CardExpenseComponent({ expense: expense });
         const newItemEl = $('<li class="list-item"></li>');
         newItemEl.append(cardEl);
-        const $group = this.$root.find(`[data-group-id="${expense.originId}"]`);
+        let $group = this.$root.find(`[data-group-id="${expense.originId}"]`);
+        if ($group.length === 0) {
+            $group = $(`
+                <li class="list-header" data-group-id="${expense.originId}">
+                    <span class="title">${expense.origin.name}</span>
+                    <span class="total">R$ 0,00</span>
+                </li>
+            `);
+            this.$root.find('.list-card').append($group);
+        }
         $(newItemEl).insertAfter($group);
         const $groupTotal = $group.find('.total');
         let total = parseFloat($groupTotal.text().replace('R$ ', '').replace(',', '.'));
@@ -28,6 +37,16 @@ export class ListExpensesCompoent {
         newItemEl.append(cardEl);
         oldItemEl.replaceWith(newItemEl);
         this.options.onItemUpdated.call(this, newItemEl[0], expense);
+    }
+    removeItem(expense) {
+        const oldItemEl = this.$root.find(`.card-expense[data-id="${expense.id}"]`).closest('.list-item');
+        oldItemEl.remove();
+        const $group = this.$root.find(`[data-group-id="${expense.originId}"]`);
+        const $groupTotal = $group.find('.total');
+        let total = parseFloat($groupTotal.text().replace('R$ ', '').replace(',', '.'));
+        total -= expense.price;
+        const totalStr = 'R$ ' + total.toFixed(2).replace('.', ',');
+        $groupTotal.html(totalStr);
     }
     getDom() {
         return this.$root[0];

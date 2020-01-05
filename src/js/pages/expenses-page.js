@@ -74,15 +74,22 @@ export class ExpensesPage extends PageBase {
         this.$context.find('[name="addExpense"]').click(this.handleAddExpense.bind(this));
     }
     showExpenseDetail(exp, domItem) {
-        new ExpenseDetailComponent({
+        const expDetail = new ExpenseDetailComponent({
             expense: exp,
             onSave: (expense, isNewExpense) => {
                 if (isNewExpense)
                     this.listComp.addItem(expense);
-                else
-                    this.listComp.updateItem(expense);
+                else {
+                    const oldExp = expDetail.getOptions().expense;
+                    if (oldExp && oldExp.origin.id !== expense.origin.id) {
+                        this.listComp.removeItem(oldExp);
+                        this.listComp.addItem(expense);
+                    }
+                    else
+                        this.listComp.updateItem(expense);
+                }
             },
-            onDelete: () => domItem.remove()
+            onDelete: (expense) => this.listComp.removeItem(expense)
         });
     }
     handleAddExpense(e) {

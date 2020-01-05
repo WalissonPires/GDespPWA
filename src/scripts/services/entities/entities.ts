@@ -5,6 +5,11 @@ export class Categoria {
     cor: string;
 }
 
+export class Origem {
+    id: number;
+    nome: string;
+}
+
 export class Membro {    
     id: number;
     usuarioID: number;    
