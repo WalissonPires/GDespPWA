@@ -105,6 +105,7 @@ export class ExpensesApi {
             Vencimento: expense.dueDate,
             OrigemID: expense.originId,
             CategoriaID: expense.categoryId,
+            ValorTotal: expense.price
         };
 
         let expPartial = [];

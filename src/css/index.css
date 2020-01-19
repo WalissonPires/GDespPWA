@@ -677,7 +677,7 @@ h4, .text-4 {
     border: none;
 }
 
-select, input {
+select, input:not([type="radio"]) {
     padding: 5px 10px;
     border: none;
     border-bottom: 1px solid #aaa;
@@ -733,6 +733,10 @@ select:focus, input:focus {
 .page-filter {
     border-bottom: 1px solid #e0e0e0;
     box-shadow: none;
+}
+
+.page-filter .select-text {
+    width: auto;
 }
 
 /* ==== Loading Bar 
