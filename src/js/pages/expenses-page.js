@@ -77,8 +77,13 @@ export class ExpensesPage extends PageBase {
         const expDetail = new ExpenseDetailComponent({
             expense: exp,
             onSave: (expense, isNewExpense) => {
-                if (isNewExpense)
-                    this.listComp.addItem(expense);
+                if (isNewExpense) {
+                    const monthYear = Layout.getMonthYear();
+                    const dueDate = new Date(expense.dueDate);
+                    if (dueDate.getFullYear() == monthYear.year && (dueDate.getMonth() + 1) == monthYear.month) {
+                        this.listComp.addItem(expense);
+                    }
+                }
                 else {
                     const oldExp = expDetail.getOptions().expense;
                     if (oldExp && oldExp.origin.id !== expense.origin.id) {

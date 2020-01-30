@@ -155,7 +155,7 @@ export class ExpenseDetailComponent {
             $memberEl.find('[name="guestId"]').val(x.guestId);
             $memberEl.find('.selecao')[0].checked = x.price > 0;
             $memberEl.find('.name').html(x.name);
-            $memberEl.find('.value').html('R$ ' + x.price);
+            $memberEl.find('.value').html(x.price.toFixed(2).replace('.', ','));
             $membersContent.append($memberEl);
         });
     }
@@ -165,6 +165,7 @@ export class ExpenseDetailComponent {
         $m.find('[name="delete"]').click(this.handleDeleteExpense.bind(this));
         $m.find('.card-members .body .member:not([id])').click(this.handleMemberClick.bind(this));
         $m.find('.card-members .body .member:not([id]) .selecao').change(this.handleMemberSelection.bind(this));
+        $m.find('.card-members .body .member:not([id]) .value').keydown(this.handleMemberValueChange.bind(this));
     }
     getExpenseOfDom() {
         const $m = $(this.modal.getRootElement());
@@ -195,7 +196,7 @@ export class ExpenseDetailComponent {
             expense.members.push({
                 id: parseInt($el.find('[name="id"]').val()) || 0,
                 name: $el.find('.name').text(),
-                price: parseFloat($el.find('.value').text().replace('R$ ', '').replace(',', '.')),
+                price: parseFloat($el.find('.value').text().replace(',', '.')),
                 guestId: (parseInt($el.find('[name="guestId"]').val()) || null),
                 userId: parseInt($el.find('[name="userId"]').val()) || null,
                 userGuestId: undefined
@@ -232,7 +233,7 @@ export class ExpenseDetailComponent {
         const $m = $(this.modal.getRootElement());
         const selecteds = $m.find('.card-members .body .member:not([id]) .selecao:checked').length;
         if (selecteds === 0) {
-            $m.find('.card-members .body .member:not([id]) .value').html('R$ 0');
+            $m.find('.card-members .body .member:not([id]) .value').html('0');
             return;
         }
         const price = parseFloat($m.find('[name="price"]').val().replace(',', '.'));
@@ -240,10 +241,21 @@ export class ExpenseDetailComponent {
         $m.find('.card-members .body .member:not([id])').each((i, el) => {
             const $el = $(el);
             if ($el.find('.selecao')[0].checked)
-                $el.find('.value').html('R$ ' + partial.toFixed(2).replace('.', ','));
+                $el.find('.value').html(partial.toFixed(2).replace('.', ','));
             else
-                $el.find('.value').html('R$ 0');
+                $el.find('.value').html('0');
         });
+    }
+    handleMemberValueChange(e) {
+        const checked = $(e.currentTarget).closest('.member').find('.selecao')[0].checked;
+        if (!checked) {
+            return false;
+        }
+        const num = parseInt(e.key);
+        if (e.key != ',' && isNaN(num) && e.key.indexOf('Arrow') === -1 && e.key !== 'Backspace' && e.key !== 'Delete')
+            return false;
+        if (e.key === ',' && $(e.target).html().indexOf(',') >= 0)
+            return false;
     }
     handleSaveData() {
         const $m = $(this.modal.getRootElement());
