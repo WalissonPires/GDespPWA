@@ -13,6 +13,7 @@ export class Expense {
     category?: Category;
     origin?: Origin;
     members?: Member[];
+    tags?: string;
 }
 
 export class Category {

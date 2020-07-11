@@ -123,6 +123,7 @@ export class ExpenseDetailComponent {
         }
         $m.find('[name="originId"]').val(exp.origin && exp.origin.id);
         $m.find('[name="description"]').val(exp.description);
+        $m.find('[name="tags"]').val(exp.tags);
         $m.find('[name="price"]').val(exp.price);
         $m.find('[name="dueDate"]').val(exp.dueDate.split('T')[0]);
         exp.totalInstallments > 1 && $m.find('.portion')
@@ -184,6 +185,7 @@ export class ExpenseDetailComponent {
                 name: $cardExp.find('[name="originId"] :selected').text()
             },
             description: $cardExp.find('[name="description"]').val(),
+            tags: $cardExp.find('[name="tags"]').val(),
             price: parseFloat($cardExp.find('[name="price"]').val().replace(',', '.')),
             dueDate: $cardExp.find('[name="dueDate"]').val(),
             members: []

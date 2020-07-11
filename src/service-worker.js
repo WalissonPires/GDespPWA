@@ -1,7 +1,7 @@
 'use strict';
 
 var dataCacheName  = 'GDespDataCache';
-var cacheName = 'GDespShellCache-v1.1.29';
+var cacheName = 'GDespShellCache-v1.1.31';
 var filesToCache = [
     './',
     './index.html',
